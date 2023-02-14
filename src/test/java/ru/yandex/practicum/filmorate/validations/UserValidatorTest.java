@@ -5,19 +5,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.validation.*;
 import java.time.LocalDate;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserValidatorTest {
     private static ValidatorFactory validatorFactory;
     private static Validator validator;
+    final String exceptionEmail = "email: Поле email не соответствует формату userEmail@email.com";
+    final String exceptionBirthday = "birthday: Поле birthday не корректно";
+    final String exceptionLogin = "login: Поле login должно содержать только A-Z и 1-0";
 
     @BeforeAll
     static void createValidatorFactory() {
@@ -31,7 +30,7 @@ public class UserValidatorTest {
     }
 
     @Test
-    public void UserCreate_isValidTrue() {
+    public void userCreate_isValidTrue() {
         User user = User.builder()
                 .id(1)
                 .email("commono@mail.net")
@@ -40,11 +39,13 @@ public class UserValidatorTest {
                 .birthday(LocalDate.now().minusDays(1))
                 .build();
         Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertTrue(violations.isEmpty());
+        Exception ex = new ConstraintViolationException(violations);
+        assertTrue(violations.isEmpty(), "Ошибка теста: пользователь полностью корректный, ошибка - "
+                + ex.getMessage());
     }
 
     @Test
-    public void UserNotValidEmail_isValidFalse() {
+    public void userNotValidEmail_isValidFalse() {
         User user = User.builder()
                 .id(1)
                 .email("commono?mail.net")
@@ -53,11 +54,26 @@ public class UserValidatorTest {
                 .birthday(LocalDate.now().minusDays(1))
                 .build();
         Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertFalse(violations.isEmpty());
+        Exception ex = new ConstraintViolationException(violations);
+        assertEquals(exceptionEmail, ex.getMessage(), "Ошибка теста: у пользователя не валидный эмейл");
     }
 
     @Test
-    public void UserNotValidBirthDay_isValidFalse() {
+    public void userNotValidEmailIsBlank_isValidFalse() {
+        User user = User.builder()
+                .id(1)
+                .email(" ")
+                .login("Administrator")
+                .name("sudo")
+                .birthday(LocalDate.now().minusDays(1))
+                .build();
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Exception ex = new ConstraintViolationException(violations);
+        assertEquals(exceptionEmail, ex.getMessage(), "Ошибка теста: у пользователя не пустой эмейл");
+    }
+
+    @Test
+    public void userNotValidBirthDay_isValidFalse() {
         User user = User.builder()
                 .id(1)
                 .email("commono@mail.net")
@@ -66,11 +82,12 @@ public class UserValidatorTest {
                 .birthday(LocalDate.now().plusDays(1))
                 .build();
         Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertFalse(violations.isEmpty());
+        Exception ex = new ConstraintViolationException(violations);
+        assertEquals(exceptionBirthday, ex.getMessage(), "Ошибка теста: у пользователя день рождения в будущем");
     }
 
     @Test
-    public void UserNotValidLogin_isValidFalse() {
+    public void userNotValidLogin_isValidFalse() {
         User user = User.builder()
                 .id(1)
                 .email("commono@mail.net")
@@ -79,11 +96,26 @@ public class UserValidatorTest {
                 .birthday(LocalDate.now().minusDays(1))
                 .build();
         Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertFalse(violations.isEmpty());
+        Exception ex = new ConstraintViolationException(violations);
+        assertEquals(exceptionLogin, ex.getMessage(), "Ошибка теста: у пользователя логин с пробелами");
     }
 
     @Test
-    public void UserValidBirthDayNow_isValidFalse() {
+    public void userNotValidLoginIsBlank_isValidFalse() {
+        User user = User.builder()
+                .id(1)
+                .email("commono@mail.net")
+                .login("  ")
+                .name("sudo")
+                .birthday(LocalDate.now().minusDays(1))
+                .build();
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Exception ex = new ConstraintViolationException(violations);
+        assertEquals(exceptionLogin, ex.getMessage(), "Ошибка теста: у пользователя логин с пустой");
+    }
+
+    @Test
+    public void userValidBirthDayNow_isValidTrue() {
         User user = User.builder()
                 .id(1)
                 .email("commono@mail.net")
@@ -92,6 +124,8 @@ public class UserValidatorTest {
                 .birthday(LocalDate.now())
                 .build();
         Set<ConstraintViolation<User>> violations = validator.validate(user);
-        assertTrue(violations.isEmpty());
+        Exception ex = new ConstraintViolationException(violations);
+        assertTrue(violations.isEmpty(), "Ошибка теста: у пользователя все поля корректны, ошибка - "
+                + ex.getMessage());
     }
 }

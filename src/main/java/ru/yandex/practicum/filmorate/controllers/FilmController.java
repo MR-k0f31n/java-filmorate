@@ -29,7 +29,7 @@ public class FilmController {
 
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
-        checkFilm(film);
+        validateFilm(film);
         film.setId(currencyIdFilm++);
         films.put(film.getId(), film);
         log.info("Получен запрос к эндпоинту: 'POST /films', фильм с name '{}' успешно записан, присвоен id '{}'",
@@ -43,14 +43,14 @@ public class FilmController {
             log.warn("Не удалось найти фильм с id '{}'", film.getId());
             throw new NotFoundException("Фильма с таким id не существует");
         }
-        checkFilm(film);
+        validateFilm(film);
         films.put(film.getId(), film);
         log.info("Получен запрос к эндпоинту: 'PUT /films', фильм id name '{} {}' успешно Обновлен",
                 film.getId(), film.getName());
         return film;
     }
 
-    private void checkFilm(Film film) {
+    private void validateFilm(Film film) {
         if (film.getReleaseDate().isBefore(DAY_FILM)) {
             log.warn("Неккоректно указана дате релиза '{}'", film.getReleaseDate());
             throw new ValidationException("Некоректная дата релиза, максимальная дата релиза 28.12.1895");

@@ -15,15 +15,16 @@ import java.time.LocalDate;
 @NonNull
 public class Film {
     private final static int MAX_LENGTH_DESCRIPTION = 200;
-    private int id;
+    @Positive
+    private Integer id;
     @NotBlank(message = "Поле name не может быть пустым")
     private final String name;
     @NotBlank(message = "Поле description не может быть пустым")
-    @Size(message = "Поле description имеет максимальноче число символов: " + MAX_LENGTH_DESCRIPTION,
+    @Size(message = "Поле description имеет максимальное число символов: " + MAX_LENGTH_DESCRIPTION,
             max = MAX_LENGTH_DESCRIPTION)
     private final String description;
-    @PastOrPresent(message = "Поле releaseDate некореткто")
+    @PastOrPresent(message = "Поле releaseDate некорректно")
     private final LocalDate releaseDate;
     @Positive
-    private final int duration;
+    private final Integer duration;
 }

@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user) throws ValidationException {
+    public User createUser(@Valid @RequestBody User user) {
         if (usageEmail.contains(user.getEmail())) {
             log.warn("Пользователь с email '{}' уже существует", user.getEmail());
             throw new ValidationException("Пользователь с таким email уже существует");
@@ -43,13 +43,17 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) throws ValidationException {
+    public User updateUser(@Valid @RequestBody User user) {
         if (!users.containsKey(user.getId())) {
             log.debug("Получен запрос к эндпоинту: 'PUT /users', пользователь с id '{}' не существует",
                     user.getId());
             throw new NotFoundException("Пользователь с таким id не обнаружен!");
         }
-
+        if (usageEmail.contains(user.getEmail())) {
+            log.debug("Получен запрос к эндпоинту: 'PUT /users', такой эмейл уже существует '{}'",
+                    user.getEmail());
+            throw new ValidationException("Пользователь с таким email существует");
+        }
         users.put(user.getId(), user);
         log.info("Получен запрос к эндпоинту: 'PUT /users', пользователь id '{}' успешно обновлен",
                 user.getId());
