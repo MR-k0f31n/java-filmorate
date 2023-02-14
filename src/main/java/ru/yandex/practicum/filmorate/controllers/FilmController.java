@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -23,42 +21,36 @@ public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
 
     @GetMapping
-    public List<Film> returnAllFilm(HttpServletRequest request) {
-        log.trace("Получен запрос к эндпоинту: '{} {}', Вернули количество фильмов: '{}'",
-                request.getMethod(), request.getRequestURI(), films.size());
+    public List<Film> returnAllFilm() {
+        log.info("Получен запрос к эндпоинту: 'GET /users', Вернули количество фильмов: '{}'",
+                films.size());
         return List.copyOf(films.values());
     }
 
     @PostMapping
-    public Film createFilm (@Valid @RequestBody Film film, HttpServletRequest request) {
+    public Film createFilm(@Valid @RequestBody Film film) {
         checkFilm(film);
         film.setId(currencyIdFilm++);
         films.put(film.getId(), film);
-        log.info("Получен запрос к эндпоинту: '{} {}', фильм с name '{}' успешно записан, присвоен id '{}'",
-                request.getMethod(), request.getRequestURI(),
+        log.info("Получен запрос к эндпоинту: 'POST /films', фильм с name '{}' успешно записан, присвоен id '{}'",
                 film.getName(), film.getId());
         return film;
     }
 
     @PutMapping
-    public Film updateFilm (@Valid @RequestBody Film film, HttpServletRequest request) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         if (!films.containsKey(film.getId())) {
             log.warn("Не удалось найти фильм с id '{}'", film.getId());
             throw new NotFoundException("Фильма с таким id не существует");
         }
         checkFilm(film);
         films.put(film.getId(), film);
-        log.info("Получен запрос к эндпоинту: '{} {}', фильм id name '{} {}' успешно Обновлен",
-                request.getMethod(), request.getRequestURI(),
+        log.info("Получен запрос к эндпоинту: 'PUT /films', фильм id name '{} {}' успешно Обновлен",
                 film.getId(), film.getName());
         return film;
     }
 
-    private void checkFilm (Film film) {
-        /*if (film.getDuration().toMinutes() <= 0) {
-            log.warn("Продолжительность фильма меньше 0");
-            throw new ValidationException("Продолжительность фильма меньше 0");
-        }*/
+    private void checkFilm(Film film) {
         if (film.getReleaseDate().isBefore(DAY_FILM)) {
             log.warn("Неккоректно указана дате релиза '{}'", film.getReleaseDate());
             throw new ValidationException("Некоректная дата релиза, максимальная дата релиза 28.12.1895");

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -20,16 +19,16 @@ public class UserController {
     private final Set<String> usageEmail = new HashSet<>();
 
     @GetMapping
-    public List<User> returnAllUser(HttpServletRequest request) {
-        log.trace("Получен запрос к эндпоинту: '{} {}', Вернули список пользователей: '{}'",
-                request.getMethod(), request.getRequestURI(), users.size());
+    public List<User> returnAllUser() {
+        log.info("Получен запрос к эндпоинту: 'GET /users', Вернули список пользователей: '{}'",
+                users.size());
         return List.copyOf(users.values());
     }
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user, HttpServletRequest request) throws ValidationException {
+    public User createUser(@Valid @RequestBody User user) throws ValidationException {
         if (usageEmail.contains(user.getEmail())) {
-            log.debug("Пользователь с email '{}' уже существует", user.getEmail());
+            log.warn("Пользователь с email '{}' уже существует", user.getEmail());
             throw new ValidationException("Пользователь с таким email уже существует");
         }
         if (user.getName() == null) {
@@ -38,20 +37,22 @@ public class UserController {
         user.setId(currencyUserId++);
         users.put(user.getId(), user);
         usageEmail.add(user.getEmail());
-        log.info("Получен запрос к эндпоинту: '{} {}', пользователь с email '{}' успешно создан, login '{}', присвоен id '{}'",
-                request.getMethod(), request.getRequestURI(),
+        log.info("Получен запрос к эндпоинту: 'POST /users', пользователь с email '{}' успешно создан, login '{}', присвоен id '{}'",
                 user.getEmail(), user.getLogin(), user.getId());
         return user;
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user, HttpServletRequest request) throws ValidationException {
+    public User updateUser(@Valid @RequestBody User user) throws ValidationException {
         if (!users.containsKey(user.getId())) {
-            log.debug("Получен запрос к эндпоинту: '{} {}', пользователь с id '{}' не существует",
-                    request.getMethod(), request.getRequestURI(), user.getId());
+            log.debug("Получен запрос к эндпоинту: 'PUT /users', пользователь с id '{}' не существует",
+                    user.getId());
             throw new NotFoundException("Пользователь с таким id не обнаружен!");
         }
+
         users.put(user.getId(), user);
+        log.info("Получен запрос к эндпоинту: 'PUT /users', пользователь id '{}' успешно обновлен",
+                user.getId());
         return user;
     }
 }
