@@ -25,6 +25,6 @@ public class Film {
     private final String description;
     @PastOrPresent(message = "Поле releaseDate некорректно")
     private final LocalDate releaseDate;
-    @Positive
+    @Positive(message = "должно быть больше 0")
     private final Integer duration;
 }
