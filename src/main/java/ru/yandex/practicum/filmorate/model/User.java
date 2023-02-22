@@ -6,6 +6,7 @@ import lombok.NonNull;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -17,10 +18,12 @@ public class User {
     private final String email;
     @Pattern(message = "Поле login должно содержать только A-Z и 1-0",
             regexp = "^[A-Za-z]([.A-Za-z0-9-]{1,18})([A-Za-z0-9])$")
+    @NonNull
     private final String login;
 
     @Builder.Default
     private String name = "";
     @PastOrPresent(message = "Поле birthday не корректно")
     private final LocalDate birthday;
+    private final List<Integer> friends;
 }

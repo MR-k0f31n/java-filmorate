@@ -1,38 +1,36 @@
-package ru.yandex.practicum.filmorate.controllers;
+package ru.yandex.practicum.filmorate.storage;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
-import ru.yandex.practicum.filmorate.exeptions.ValidationException;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
-import javax.validation.Valid;
 import java.util.*;
 
-@RestController
-@RequestMapping("/users")
+@Component
 @Slf4j
-public class UserController {
-
+public class InMemoryUserStorage implements UserStorage {
     private int currencyUserId = 1;
     private final Map<Integer, User> users = new HashMap<>();
     private final Set<String> usageEmail = new HashSet<>();
 
-    @GetMapping
-    public List<User> returnAllUser() {
-        log.info("Получен запрос к эндпоинту: 'GET /users', Вернули список пользователей: '{}'",
-                users.size());
+    @Override
+    public List<User> getAllUser() {
         return List.copyOf(users.values());
     }
 
-    @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
+    @Override
+    public User addUser(User user) {
         if (usageEmail.contains(user.getEmail())) {
             log.warn("Пользователь с email '{}' уже существует", user.getEmail());
             throw new ValidationException("Пользователь с таким email уже существует");
         }
-        if (user.getName() == null) {
+        if (user.getName().equals("")) {
             user.setName(user.getLogin());
+            log.info("У пользователя не задан name, был присвоен name: '{}'", user.getName());
         }
         user.setId(currencyUserId++);
         users.put(user.getId(), user);
@@ -42,8 +40,8 @@ public class UserController {
         return user;
     }
 
-    @PutMapping
-    public User updateUser(@Valid @RequestBody User user) {
+    @Override
+    public User updateUser(User user) {
         if (!users.containsKey(user.getId())) {
             log.debug("Получен запрос к эндпоинту: 'PUT /users', пользователь с id '{}' не существует",
                     user.getId());
@@ -58,5 +56,25 @@ public class UserController {
         log.info("Получен запрос к эндпоинту: 'PUT /users', пользователь id '{}' успешно обновлен",
                 user.getId());
         return user;
+    }
+
+    @Override
+    public void deleteUser(int id) {
+
+    }
+
+    @Override
+    public User findUser(User user) {
+        return null;
+    }
+
+    @Override
+    public List<User> getUserFriend(User user) {
+        return null;
+    }
+
+    @Override
+    public List<Film> findFilmUserLike(User user) {
+        return null;
     }
 }

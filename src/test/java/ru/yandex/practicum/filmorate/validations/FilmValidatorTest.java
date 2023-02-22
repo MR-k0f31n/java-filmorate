@@ -14,11 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FilmValidatorTest {
     private static ValidatorFactory validatorFactory;
     private static Validator validator;
-    final String exeptionDescription = "description: Поле description имеет максимальное число символов: 200";
-    final String exeptionReleaseDate = "releaseDate: Поле releaseDate некорректно";
-    final String exeptionDuration = "duration: должно быть больше 0";
-    final String exeptionDescriptionIsBlank = "description: Поле description не может быть пустым";
-    final String exeptionNameIsBlank = "name: Поле name не может быть пустым";
+    final String exceptionDescription = "description: Поле description имеет максимальное число символов: 200";
+    final String exceptionReleaseDate = "releaseDate: Поле releaseDate некорректно";
+    final String exceptionDayCinemaReleaseDate = "releaseDate: Поле releaseDate некорректно дата первого кино: 28.12.1895";
+    final String exceptionDuration = "duration: должно быть больше 0";
+    final String exceptionDescriptionIsBlank = "description: Поле description не может быть пустым";
+    final String exceptionNameIsBlank = "name: Поле name не может быть пустым";
 
 
     @BeforeAll
@@ -57,7 +58,7 @@ public class FilmValidatorTest {
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
-        assertEquals(exeptionDuration, ex.getMessage(), "Ошибка теста: у фильма продолжительность минусовая");
+        assertEquals(exceptionDuration, ex.getMessage(), "Ошибка теста: у фильма продолжительность минусовая");
     }
 
     @Test
@@ -71,7 +72,7 @@ public class FilmValidatorTest {
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
-        assertEquals(exeptionDuration, ex.getMessage(), "Ошибка теста: у фильма 0 в продолжительности");
+        assertEquals(exceptionDuration, ex.getMessage(), "Ошибка теста: у фильма 0 в продолжительности");
     }
 
     @Test
@@ -108,7 +109,7 @@ public class FilmValidatorTest {
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
-        assertEquals(exeptionDescription, ex.getMessage(), "Ошибка теста: у фильма описание 201 символ");
+        assertEquals(exceptionDescription, ex.getMessage(), "Ошибка теста: у фильма описание 201 символ");
     }
 
     @Test
@@ -122,7 +123,7 @@ public class FilmValidatorTest {
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
-        assertEquals(exeptionDescriptionIsBlank, ex.getMessage(), "Ошибка теста: у фильма пустое имя");
+        assertEquals(exceptionDescriptionIsBlank, ex.getMessage(), "Ошибка теста: у фильма пустое имя");
     }
 
     @Test
@@ -136,7 +137,7 @@ public class FilmValidatorTest {
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
-        assertEquals(exeptionNameIsBlank, ex.getMessage(), "Ошибка теста: у фильма название пустое");
+        assertEquals(exceptionNameIsBlank, ex.getMessage(), "Ошибка теста: у фильма название пустое");
     }
 
     @Test
@@ -150,6 +151,20 @@ public class FilmValidatorTest {
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
-        assertEquals(exeptionReleaseDate, ex.getMessage(), "Ошибка теста: фильм из будущего");
+        assertEquals(exceptionReleaseDate, ex.getMessage(), "Ошибка теста: фильм из будущего");
+    }
+
+    @Test
+    public void filmCreateReleaseDateBeforeCinemaBirth_isValidFalse() {
+        Film film = Film.builder()
+                .id(1)
+                .name("Parry Hotter")
+                .description("This is a boy who learned to program")
+                .releaseDate(LocalDate.of(1895,12,27))
+                .duration(10)
+                .build();
+        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Exception ex = new ConstraintViolationException(violations);
+        assertEquals(exceptionDayCinemaReleaseDate, ex.getMessage(), "Ошибка теста: фильм раньше дня кино");
     }
 }
