@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FilmValidatorTest {
+public class FilmValidatorTests {
     private static ValidatorFactory validatorFactory;
     private static Validator validator;
     final String exceptionDescription = "description: Поле description имеет максимальное число символов: 200";

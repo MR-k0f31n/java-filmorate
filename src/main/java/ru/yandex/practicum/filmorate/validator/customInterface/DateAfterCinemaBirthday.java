@@ -15,7 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 @Constraint(validatedBy = DateValidate.class)
 @Documented
 public @interface DateAfterCinemaBirthday {
-    String message() default "{javax.validation.constraints.DateAfterCinemaBirthday.message}";
+    String message() default "{ru.yandex.practicum.filmorate.validator.DateAfterCinemaBirthday.message}";
 
     Class<?>[] groups() default {};
 

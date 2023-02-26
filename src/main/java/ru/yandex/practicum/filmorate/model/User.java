@@ -6,7 +6,8 @@ import lombok.NonNull;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -20,10 +21,9 @@ public class User {
             regexp = "^[A-Za-z]([.A-Za-z0-9-]{1,18})([A-Za-z0-9])$")
     @NonNull
     private final String login;
-
     @Builder.Default
     private String name = "";
     @PastOrPresent(message = "Поле birthday не корректно")
     private final LocalDate birthday;
-    private final List<Integer> friends;
+    private final Set<Integer> friends = new HashSet<>();
 }

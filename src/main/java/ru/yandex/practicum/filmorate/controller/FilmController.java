@@ -1,40 +1,70 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequiredArgsConstructor
+
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    private final InMemoryFilmStorage filmStorage;
-    @GetMapping
-    public List<Film> returnAllFilm() {
-        List<Film> films = filmStorage.getAllFilm();
-        log.info("Получен запрос к эндпоинту: 'GET /users', Вернули количество фильмов: '{}'",
-                films.size());
-        return filmStorage.getAllFilm();
+    private final FilmService service;
+
+    @Autowired
+    public FilmController (FilmService service) {
+        this.service = service;
     }
 
+    @GetMapping
+    public List<Film> returnAllFilm() {
+        log.trace("Получен запрос к эндпоинту: 'GET /films'");
+        return service.getAllFilm();
+    }
+
+    @GetMapping("/{id}")
+    public Film findFilmById (@PathVariable Integer id) {
+        log.trace("Получен запрос к эндпоинту: 'GET /films/id'");
+        return service.getFilmById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike (@PathVariable Integer id, @PathVariable Integer userId) {
+        log.trace("Получен запрос к эндпоинту: 'PUT /films/id/like/userId'");
+        service.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void removeLike (@PathVariable Integer id, @PathVariable Integer userId) {
+        log.trace("Получен запрос к эндпоинту: 'DELETE /films/id/like/userId'");
+        service.removeLike(id, userId);
+    }
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
-        return filmStorage.addFilm(film);
+        log.trace("Получен запрос к эндпоинту: 'POST /films'");
+        return service.addFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        return filmStorage.updateFilm(film);
+        log.trace("Получен запрос к эндпоинту: 'PUT /films'");
+        return service.updateFilm(film);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteFilm (@PathVariable Integer id) {
+        log.trace("Получен запрос к эндпоинту: 'DELETE /films/id'");
+        service.deleteFilm(id);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> viewPopularFilm (@RequestParam(defaultValue = "10") Integer count) {
+        log.trace("Получен запрос к эндпоинту: 'GET /films/popular'");
+        return service.getTop10Film(count);
     }
 }

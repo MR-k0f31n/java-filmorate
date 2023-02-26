@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.interfaces;
+package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -14,8 +14,4 @@ public interface FilmStorage {
     void deleteFilm(int id);
 
     Film getFilmById(int id);
-
-    List<Film> getTop10Film();
-
-    void likeFilm();
 }

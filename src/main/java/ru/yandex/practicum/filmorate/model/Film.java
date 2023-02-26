@@ -7,6 +7,8 @@ import ru.yandex.practicum.filmorate.validator.customInterface.DateAfterCinemaBi
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -26,6 +28,5 @@ public class Film {
     private final LocalDate releaseDate;
     @Positive(message = "должно быть больше 0")
     private final Integer duration;
-    @Positive
-    private final Integer rating;
+    private final Set<Integer> userLike = new HashSet<>();
 }

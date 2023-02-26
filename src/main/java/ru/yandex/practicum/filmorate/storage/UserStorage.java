@@ -1,6 +1,5 @@
-package ru.yandex.practicum.filmorate.storage.interfaces;
+package ru.yandex.practicum.filmorate.storage;
 
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
@@ -14,9 +13,9 @@ public interface UserStorage {
 
     void deleteUser(int id);
 
-    User findUser(User user);
+    List<User> viewUserFriend(int userId);
 
-    List<User> getUserFriend(User user);
+    User getUserById(int id);
 
-    List<Film> findFilmUserLike(User user);
+    boolean isIdContain(int id);
 }

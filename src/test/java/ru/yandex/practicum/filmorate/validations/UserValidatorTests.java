@@ -11,7 +11,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UserValidatorTest {
+public class UserValidatorTests {
     private static ValidatorFactory validatorFactory;
     private static Validator validator;
     final String exceptionEmail = "email: Поле email не соответствует формату userEmail@email.com";
@@ -129,20 +129,6 @@ public class UserValidatorTest {
             assertEquals("login is marked non-null but is null", ex.getMessage(), "Ошибка теста: у пользователя логин null");
         }
     }
-
-    /*@Test
-    public void userCreateNameIsLogin_isValidTrue() {
-        User user = User.builder()
-                .id(1)
-                .email("commono@mail.net")
-                .login("Administrator")
-                .birthday(LocalDate.now().minusDays(1))
-                .build();
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        Exception ex = new ConstraintViolationException(violations);
-        assertEquals(user.getLogin(), user.getName(), "Ошибка теста: пользователь полностью корректный, ошибка - "
-                + ex.getMessage());
-    }*/
 
     @Test
     public void userValidBirthDayNow_isValidTrue() {
