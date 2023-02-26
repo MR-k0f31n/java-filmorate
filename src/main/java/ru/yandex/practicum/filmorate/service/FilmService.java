@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FilmService {
     private final FilmStorage filmStorage;
+    private final UserStorage storage;
 
     public List<Film> getTop10Film(int count) {
         log.trace("Попытка получить топ '{}' фильмов", count);
@@ -25,6 +27,9 @@ public class FilmService {
 
     public void addLike (int filmId, int userId) {
         log.trace("Попытка поставить лайк фильму id '{}' пользователем id '{}'", filmId, userId);
+        if (!storage.isIdContain(userId)) {
+            throw new NotFoundException("Пользователь не обнаружен id " + userId);
+        }
         filmStorage.getFilmById(filmId).getUserLike().add(userId);
     }
 

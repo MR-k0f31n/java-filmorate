@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -13,14 +13,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class UserService {
     private final UserStorage userStorage;
-
-    @Autowired
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
 
     public void addFriend (int userId, int friendID) {
         log.trace("Попытка добавить в друзья");
@@ -55,8 +51,9 @@ public class UserService {
 
     public List<User> commonFriend (int userId, int otherId) {
         log.trace("Попытка получить список общих друзей");
+        User otherUser = getUserById(otherId);
         Set<Integer> commonFriendsId = userStorage.getUserById(userId).getFriends()
-                .stream().filter(userStorage.getUserById(otherId).getFriends()::contains)
+                .stream().filter(otherUser.getFriends()::contains)
                 .collect(Collectors.toSet());
         return getAllUser().stream().filter(user -> commonFriendsId.contains(user.getId()))
                 .collect(Collectors.toList());
