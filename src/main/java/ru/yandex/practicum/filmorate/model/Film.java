@@ -3,12 +3,12 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import ru.yandex.practicum.filmorate.validator.customInterface.DateAfterCinemaBirthday;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -24,7 +24,9 @@ public class Film {
             max = MAX_LENGTH_DESCRIPTION)
     private final String description;
     @PastOrPresent(message = "Поле releaseDate некорректно")
+    @DateAfterCinemaBirthday(message = "Поле releaseDate некорректно дата первого кино: 28.12.1895")
     private final LocalDate releaseDate;
     @Positive(message = "должно быть больше 0")
     private final Integer duration;
+    private final Set<Integer> userLike = new HashSet<>();
 }
