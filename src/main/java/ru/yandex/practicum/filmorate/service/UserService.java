@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,10 +21,10 @@ public class UserService {
 
     public void addFriend (int userId, int friendID) {
         log.trace("Попытка добавить в друзья");
-        if (!userStorage.isIdContain(userId)) {
+        if (!userStorage.checkUser(userId)) {
             throw new NotFoundException("Пользователь не обнаружен id " + userId);
         }
-        if (!userStorage.isIdContain(friendID)) {
+        if (!userStorage.checkUser(friendID)) {
             throw new NotFoundException("Пользователь не обнаружен id " + friendID);
         }
         userStorage.getUserById(userId).getFriends().add(friendID);
@@ -33,16 +34,16 @@ public class UserService {
 
     public void removeFriend (int userId, int friendID) {
         log.trace("Попытка удалить из друзей");
+        if (!userStorage.checkUser(userId)) {
+            throw new NotFoundException("Пользователь не обнаружен id " + userId);
+        }
+        if (!userStorage.checkUser(friendID)) {
+            throw new NotFoundException("Пользователь не обнаружен id " + friendID);
+        }
         if (!userStorage.getUserById(userId).getFriends().contains(friendID)
                 || !userStorage.getUserById(friendID).getFriends().contains(userId)) {
             throw new IncorrectParameterException(String.format("Пользователи id \"%s\" и id \"%s\" еще не друзья."
                     , userId, friendID));
-        }
-        if (!userStorage.isIdContain(userId)) {
-            throw new NotFoundException("Пользователь не обнаружен id " + userId);
-        }
-        if (!userStorage.isIdContain(friendID)) {
-            throw new NotFoundException("Пользователь не обнаружен id " + friendID);
         }
         userStorage.getUserById(userId).getFriends().remove(friendID);
         userStorage.getUserById(friendID).getFriends().remove(userId);
@@ -80,8 +81,15 @@ public class UserService {
     }
 
     public List<User> viewUserFriend(int userId) {
+        if (!userStorage.checkUser(userId)) {
+            throw new NotFoundException("Пользователь не обнаружен id " + userId);
+        }
+        List<User> list = new ArrayList<>();
+        userStorage.getUserById(userId).getFriends().forEach(id -> {
+            list.add(userStorage.getUserById(id));
+        });
         log.trace("Попытка посмотреть список друзей пользователя id '{}'", userId);
-        return userStorage.viewUserFriend(userId);
+        return list;
     }
 
     public User getUserById(int id) {

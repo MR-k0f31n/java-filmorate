@@ -11,11 +11,9 @@ public interface UserStorage {
 
     User updateUser(User user);
 
-    void deleteUser(int id);
+    void deleteUser(Integer id);
 
-    List<User> viewUserFriend(int userId);
+    User getUserById(Integer id);
 
-    User getUserById(int id);
-
-    boolean isIdContain(int id);
+    boolean checkUser(Integer id);
 }

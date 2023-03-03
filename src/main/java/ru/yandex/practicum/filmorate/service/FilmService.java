@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FilmService {
     private final FilmStorage filmStorage;
-    private final UserStorage storage;
+    private final UserStorage userStorage;
 
     public List<Film> getTop10Film(int count) {
         log.trace("Попытка получить топ '{}' фильмов", count);
@@ -27,7 +27,7 @@ public class FilmService {
 
     public void addLike (int filmId, int userId) {
         log.trace("Попытка поставить лайк фильму id '{}' пользователем id '{}'", filmId, userId);
-        if (!storage.isIdContain(userId)) {
+        if (!userStorage.checkUser(userId)) {
             throw new NotFoundException("Пользователь не обнаружен id " + userId);
         }
         filmStorage.getFilmById(filmId).getUserLike().add(userId);
