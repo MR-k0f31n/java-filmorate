@@ -19,7 +19,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public List<Film> getAllFilm() {
-        if(films.size() == 0) {
+        if (films.size() == 0) {
             log.info("Запрошен список фильмов, список пуст");
         }
         log.info("Запрошен список фильмов, кол-во фильмов '{}'", films.size());
@@ -37,7 +37,9 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        checkFilm(film.getId());
+        if (!checkFilm(film.getId())) {
+            throw new NotFoundException("Фильм не найден id " + film.getId());
+        }
         films.put(film.getId(), film);
         log.info("Фильм id name '{} {}' успешно Обновлен",
                 film.getId(), film.getName());
@@ -45,22 +47,24 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(int id) {
-        checkFilm(id);
+    public void deleteFilm(Integer id) {
+        if (!checkFilm(id)) {
+            throw new NotFoundException("Фильм не найден id " + id);
+        }
         log.info("Фильм id '{}' name '{}' удален", id, films.get(id).getName());
         films.remove(id);
     }
 
     @Override
-    public Film getFilmById(int id) {
-        checkFilm(id);
+    public Film getFilmById(Integer id) {
+        if (!checkFilm(id)) {
+            throw new NotFoundException("Фильм не найден id " + id);
+        }
         return films.get(id);
     }
 
-    private void checkFilm (int id) {
-        if (!films.containsKey(id)) {
-            log.warn("Попытка получить доступ к фильму. Не удалось найти фильм с id '{}'", id);
-            throw new NotFoundException("Фильм с id " + id + " не найден");
-        }
+    @Override
+    public boolean checkFilm(Integer id) {
+        return films.containsKey(id);
     }
 }

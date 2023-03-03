@@ -42,7 +42,9 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        checkUser(user.getId());
+        if (!checkUser(user.getId())) {
+            throw new NotFoundException("Пользователь не обнаружен id " + user.getId());
+        }
         checkEmail(user.getEmail());
         users.put(user.getId(), user);
         log.info("Пользователь id '{}' успешно обновлен",
@@ -51,42 +53,27 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void deleteUser(int id) {
-        checkUser(id);
+    public void deleteUser(Integer id) {
+        if (!checkUser(id)) {
+            throw new NotFoundException("Пользователь не обнаружен id " + id);
+        }
         log.info("Пользователь id login '{} {}' удален", id, users.get(id));
         users.remove(id);
     }
 
     @Override
-    public List<User> viewUserFriend(int userId) {
-        checkUser(userId);
-        List<User> friends = new ArrayList<>();
-        for (Integer id : users.get(userId).getFriends()) {
-            friends.add(users.get(id));
+    public User getUserById(Integer id) {
+        if (!checkUser(id)) {
+            throw new NotFoundException("Пользователь не обнаружен id " + id);
         }
-        log.trace("Показать друзей пользователя '{}' кол-во друзей '{}'", userId, friends.size());
-        return friends;
-    }
-
-
-    @Override
-    public User getUserById(int id) {
-        checkUser(id);
         log.trace("Пользователь с id '{}' обнаружен", id);
         return users.get(id);
     }
 
     @Override
-    public boolean isIdContain (int id) {
+    public boolean checkUser (Integer id) {
         log.trace("check user id '{}'", id);
         return users.containsKey(id);
-    }
-
-    private void checkUser(int id) {
-        if (!users.containsKey(id)) {
-            log.warn("Произошла ошибка при попытки получить получить пользователя с id '{}' ", id);
-            throw new NotFoundException("Пользователя с id " + id + " не найден");
-        }
     }
 
     private void checkEmail(String email) {
