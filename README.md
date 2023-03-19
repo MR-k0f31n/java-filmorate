@@ -21,4 +21,9 @@
 
 ## Примеры запросов
 
-- Получить пользователя по ид: SELECT name FROM USER WHERE user_id = {id}
+- Получить таблицу пользователей: SELECT * FROM user
+- Получить пользователя по id: SELECT * FROM user WHERE user_id = {id}
+- Получить друзей пользователя id: SELECT * FROM user AS us_id LEFT JOIN user AS us_friend ON us_id.user_id = us_friend.friend_user_id_set
+
+- Получить таблицу фильмов: SELECT * FROM film
+- Получить фильм по id: SELECT * FROM film WHERE film_id = {id}
