@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserStorage userStorage;
 
-    public void addFriend (int userId, int friendID) {
+    public void addFriend (Long userId, Long friendID) {
         log.trace("Попытка добавить в друзья");
         if (!userStorage.checkUser(userId)) {
             throw new NotFoundException("Пользователь не обнаружен id " + userId);
@@ -32,7 +32,7 @@ public class UserService {
         log.info("Пользователи id '{}' и id '{}' друзья",userId, friendID);
     }
 
-    public void removeFriend (int userId, int friendID) {
+    public void removeFriend (Long userId, Long friendID) {
         log.trace("Попытка удалить из друзей");
         if (!userStorage.checkUser(userId)) {
             throw new NotFoundException("Пользователь не обнаружен id " + userId);
@@ -50,10 +50,10 @@ public class UserService {
         log.info("Пользователи id '{}' и id '{}' не друзья",userId, friendID);
     }
 
-    public List<User> commonFriend (int userId, int otherId) {
+    public List<User> commonFriend (Long userId, Long otherId) {
         log.trace("Попытка получить список общих друзей");
         User otherUser = getUserById(otherId);
-        Set<Integer> commonFriendsId = userStorage.getUserById(userId).getFriends()
+        Set<Long> commonFriendsId = userStorage.getUserById(userId).getFriends()
                 .stream().filter(otherUser.getFriends()::contains)
                 .collect(Collectors.toSet());
         return getAllUser().stream().filter(user -> commonFriendsId.contains(user.getId()))
@@ -75,12 +75,12 @@ public class UserService {
         return userStorage.updateUser(user);
     }
 
-    public void deleteUser(int id) {
+    public void deleteUser(Long id) {
         log.trace("Попытка удалить пользователя");
         userStorage.deleteUser(id);
     }
 
-    public List<User> viewUserFriend(int userId) {
+    public List<User> viewUserFriend(Long userId) {
         if (!userStorage.checkUser(userId)) {
             throw new NotFoundException("Пользователь не обнаружен id " + userId);
         }
@@ -92,7 +92,7 @@ public class UserService {
         return list;
     }
 
-    public User getUserById(int id) {
+    public User getUserById(Long id) {
         log.trace("Попытка найти пользователя id '{}'", id);
         return userStorage.getUserById(id);
     }

@@ -14,8 +14,8 @@ import java.util.HashMap;
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private int currencyIdFilm = 1;
-    private final Map<Integer, Film> films = new HashMap<>();
+    private long currencyIdFilm = 1;
+    private final Map<Long, Film> films = new HashMap<>();
 
     @Override
     public List<Film> getAllFilm() {
@@ -47,7 +47,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(Integer id) {
+    public void deleteFilm(Long id) {
         if (!checkFilm(id)) {
             throw new NotFoundException("Фильм не найден id " + id);
         }
@@ -56,7 +56,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(Integer id) {
+    public Film getFilmById(Long id) {
         if (!checkFilm(id)) {
             throw new NotFoundException("Фильм не найден id " + id);
         }
@@ -64,7 +64,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public boolean checkFilm(Integer id) {
+    public boolean checkFilm(Long id) {
         return films.containsKey(id);
     }
 }

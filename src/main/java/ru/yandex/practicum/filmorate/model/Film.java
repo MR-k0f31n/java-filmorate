@@ -16,7 +16,7 @@ import java.util.Set;
 public class Film {
     private final static int MAX_LENGTH_DESCRIPTION = 200;
     @Positive
-    private Integer id;
+    private Long id;
     @NotBlank(message = "Поле name не может быть пустым")
     private final String name;
     @NotBlank(message = "Поле description не может быть пустым")
@@ -27,6 +27,7 @@ public class Film {
     @DateAfterCinemaBirthday(message = "Поле releaseDate некорректно дата первого кино: 28.12.1895")
     private final LocalDate releaseDate;
     @Positive(message = "должно быть больше 0")
-    private final Integer duration;
-    private final Set<Integer> userLike = new HashSet<>();
+    private final Long duration;
+    private final Set<Long> genre = new HashSet<>();
+    private final Set<Long> userLike = new HashSet<>();
 }

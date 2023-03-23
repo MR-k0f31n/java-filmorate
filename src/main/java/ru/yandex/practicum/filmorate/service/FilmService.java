@@ -18,14 +18,14 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
-    public List<Film> getTop10Film(int count) {
+    public List<Film> getTop10Film(Long count) {
         log.trace("Попытка получить топ '{}' фильмов", count);
         return List.copyOf(filmStorage.getAllFilm().stream()
                 .sorted((o1, o2) -> o2.getUserLike().size() - o1.getUserLike().size())
                 .limit(count).collect(Collectors.toList()));
     }
 
-    public void addLike (int filmId, int userId) {
+    public void addLike(Long filmId, Long userId) {
         log.trace("Попытка поставить лайк фильму id '{}' пользователем id '{}'", filmId, userId);
         if (!userStorage.checkUser(userId)) {
             throw new NotFoundException("Пользователь не обнаружен id " + userId);
@@ -33,7 +33,7 @@ public class FilmService {
         filmStorage.getFilmById(filmId).getUserLike().add(userId);
     }
 
-    public void removeLike (int filmId, int userId) {
+    public void removeLike(Long filmId, Long userId) {
         log.trace("Попытка удалить лайк фильму id '{}' пользователем id '{}'", filmId, userId);
         if (!filmStorage.getFilmById(filmId).getUserLike().contains(userId)) {
             throw new NotFoundException("Пользователь с id " + userId + " не ставил лайк");
@@ -56,12 +56,12 @@ public class FilmService {
         return filmStorage.updateFilm(film);
     }
 
-    public void deleteFilm(int id) {
+    public void deleteFilm(Long id) {
         log.trace("Попытка удалить фильм id '{}'", id);
         filmStorage.deleteFilm(id);
     }
 
-    public Film getFilmById(int id) {
+    public Film getFilmById(Long id) {
         log.trace("Попытка получить фильм id '{}'", id);
         return filmStorage.getFilmById(id);
     }

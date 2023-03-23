@@ -11,9 +11,9 @@ public interface FilmStorage {
 
     Film updateFilm(Film film);
 
-    void deleteFilm(Integer id);
+    void deleteFilm(Long id);
 
-    Film getFilmById(Integer id);
+    Film getFilmById(Long id);
 
-    boolean checkFilm (Integer id);
+    boolean checkFilm (Long id);
 }
