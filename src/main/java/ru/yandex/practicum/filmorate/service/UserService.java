@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class UserService {
+
     private final UserStorage userStorage;
 
     public void addFriend (Long userId, Long friendID) {

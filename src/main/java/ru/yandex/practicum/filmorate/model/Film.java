@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -11,23 +12,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Builder
-@NonNull
+@AllArgsConstructor
 public class Film {
     private final static int MAX_LENGTH_DESCRIPTION = 200;
     @Positive
     private Long id;
     @NotBlank(message = "Поле name не может быть пустым")
-    private final String name;
+    private String name;
     @NotBlank(message = "Поле description не может быть пустым")
     @Size(message = "Поле description имеет максимальное число символов: " + MAX_LENGTH_DESCRIPTION,
             max = MAX_LENGTH_DESCRIPTION)
-    private final String description;
+    private String description;
     @PastOrPresent(message = "Поле releaseDate некорректно")
     @DateAfterCinemaBirthday(message = "Поле releaseDate некорректно дата первого кино: 28.12.1895")
-    private final LocalDate releaseDate;
+    private LocalDate releaseDate;
     @Positive(message = "должно быть больше 0")
-    private final Long duration;
-    private final Set<Long> genre = new HashSet<>();
-    private final Set<Long> userLike = new HashSet<>();
+    private Long duration;
+    private Set<Long> genre;
+    private Set<Long> userLike;
 }
