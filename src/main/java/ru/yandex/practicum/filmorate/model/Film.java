@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.customInterface.DateAfterCinemaBirthday;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class Film {
     private final static int MAX_LENGTH_DESCRIPTION = 200;
     @Positive
