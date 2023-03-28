@@ -47,12 +47,12 @@ public class FilmService {
     }
 
     public Film addFilm(Film film) {
-        log.trace("Попытка добавить фильм name '{}'", film.getName());
+        log.trace("Попытка добавить фильм name '{}'", film.getTitle());
         return filmStorage.addFilm(film);
     }
 
     public Film updateFilm(Film film) {
-        log.trace("Попытка обновить фильм name '{}'", film.getName());
+        log.trace("Попытка обновить фильм name '{}'", film.getTitle());
         return filmStorage.updateFilm(film);
     }
 

@@ -31,7 +31,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         film.setId(currencyIdFilm++);
         films.put(film.getId(), film);
         log.info("Фильм с name '{}' успешно записан, присвоен id '{}'",
-                film.getName(), film.getId());
+                film.getTitle(), film.getId());
         return film;
     }
 
@@ -42,7 +42,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         films.put(film.getId(), film);
         log.info("Фильм id name '{} {}' успешно Обновлен",
-                film.getId(), film.getName());
+                film.getId(), film.getTitle());
         return film;
     }
 
@@ -51,7 +51,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (!checkFilm(id)) {
             throw new NotFoundException("Фильм не найден id " + id);
         }
-        log.info("Фильм id '{}' name '{}' удален", id, films.get(id).getName());
+        log.info("Фильм id '{}' name '{}' удален", id, films.get(id).getTitle());
         films.remove(id);
     }
 
