@@ -19,6 +19,7 @@ import java.util.List;
 public class UserStorageDB implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final FriendStorageDB friendStorageDB;
 
     @Override
     public List<User> getAllUser() {
@@ -70,7 +71,10 @@ public class UserStorageDB implements UserDao {
     public User getUserById(Long id) {
         try {
             String sqlRequest = "SELECT * FROM users WHERE user_id = ?";
-            return jdbcTemplate.queryForObject(sqlRequest, new UserRowMapper(), id);
+            User user = jdbcTemplate.queryForObject(sqlRequest, new UserRowMapper(), id);
+            user.getFriends().addAll(friendStorageDB.getAllFriendUserById(id));
+            System.out.println(user);
+            return user;
         } catch (Throwable exception) {
             log.warn("Не удалось найти пользователя id = '{}'", id);
             throw new NotFoundException ("Не удалось найти пользователя id = " + id);

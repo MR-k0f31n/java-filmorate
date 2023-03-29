@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.dao.implement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -16,24 +17,24 @@ import java.util.List;
 @Primary
 @Slf4j
 @RequiredArgsConstructor
-
 public class MpaStorageDB implements MpaDao {
-    JdbcTemplate jdbcTemplate;
+
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Mpa getRatingById(Long id) {
+    public Mpa getMpaById(Long id) {
         try {
-            String sqlRequest = "SELECT * FROM ratings WHERE rating_id = ?";
+            String sqlRequest = "SELECT * FROM mpa WHERE mpa_id = ?";
             return jdbcTemplate.queryForObject(sqlRequest, new MpaRowMapper(), id);
-        } catch (Throwable exception) {
-            log.warn("Не удалось найти возрастной рейтинг id = '{}'", id);
-            throw new NotFoundException("Не удалось найти возрастной рейтинг id = " + id);
+        } catch (EmptyResultDataAccessException exception) {
+            log.warn("vse ploho");
+            throw new NotFoundException("vse ploho");
         }
     }
 
     @Override
-    public List<Mpa> getRatings() {
-        String sqlRequest = "SELECT * FROM ratings";
+    public List<Mpa> getAllMpa() {
+        String sqlRequest = "SELECT * FROM mpa";
         return jdbcTemplate.query(sqlRequest, new MpaRowMapper());
     }
 }

@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS film_genre (
 );
 
 CREATE TABLE IF NOT EXISTS friends (
-    user_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
-    friend_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users (user_id),
+    friend_id INTEGER REFERENCES users (user_id),
     PRIMARY KEY (user_id, friend_id)
 );

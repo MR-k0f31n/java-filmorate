@@ -21,8 +21,7 @@ public class UserService {
     public void addFriend(Long userId, Long friendID) {
         log.trace("Попытка добавить в друзья");
         userDao.getUserById(userId).getFriends().add(friendID);
-        userDao.getUserById(friendID).getFriends().add(userId);
-        log.info("Пользователи id '{}' и id '{}' друзья", userId, friendID);
+        log.info("Пользователи id '{}' добавил пользователя id '{}' друзья", userId, friendID);
     }
 
     public void removeFriend(Long userId, Long friendID) {

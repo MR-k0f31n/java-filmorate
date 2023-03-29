@@ -39,21 +39,19 @@ public class FilmStorageDB implements FilmDao {
                         film.getGenre(),
                         film.getMpa().getId()
                 );
-        //sqlRequest = "SELECT * FROM films WHERE name = ?";
-        /*sqlRequest = "SELECT * " +
+        sqlRequest = "SELECT * " +
                 "FROM films " +
                 "JOIN mpa ON films.mpa = mpa.mpa_id " +
-                "WHERE film_id = ? ";
-        return jdbcTemplate.queryForObject(sqlRequest, new FilmRowMapper(), film.getName());*/
-        return film;
+                "WHERE name = ? ";
+        return jdbcTemplate.queryForObject(sqlRequest, new FilmRowMapper(), film.getName());
     }
 
     @Override
     public Film updateFilm(Film film) {
         getFilmById(film.getId());
         String sqlRequest = "UPDATE films " +
-                "SET title = ?, description = ?, release_date = ?, duration = ?, genre = ?, rating = ?" +
-                "WHERE user_id = ?";
+                "SET name = ?, description = ?, release_date = ?, duration = ?, genre = ?, mpa = ?" +
+                "WHERE film_id = ?";
         jdbcTemplate.update
                 (
                         sqlRequest,
@@ -79,7 +77,7 @@ public class FilmStorageDB implements FilmDao {
         try {
             String sqlRequest = "SELECT * " +
                     "FROM films " +
-                    "JOIN ratings ON films.rating = ratings.rating_id " +
+                    "JOIN mpa ON films.mpa = mpa.mpa_id " +
                     "WHERE film_id = ? ";
             return jdbcTemplate.queryForObject(sqlRequest, new FilmRowMapper(), id);
         } catch (Throwable exception) {

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -40,5 +41,12 @@ public class ErrorHandler {
     public Map<String, String> handleThrowable(final Throwable exception) {
         log.warn("Произошло исключение сообщение ошибки '{}'", exception.getMessage());
         return Map.of("Server Error", exception.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleEmptyResultDataAccessException (final EmptyResultDataAccessException exception) {
+        log.warn("Произошло исключение EmptyResultDataAccessException сообщение ошибки '{}'", exception.getMessage());
+        return Map.of("NotFound", exception.getMessage());
     }
 }

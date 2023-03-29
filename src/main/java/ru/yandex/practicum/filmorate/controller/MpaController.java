@@ -12,19 +12,19 @@ import ru.yandex.practicum.filmorate.service.MpaService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ratings")
 @RequiredArgsConstructor
+@RequestMapping("/mpa")
 @Slf4j
 public class MpaController {
     private final MpaService mpaService;
 
     @GetMapping("/{id}")
-    public Mpa getRAtingById(@PathVariable Long id) {
-        return mpaService.getRatingById(id);
+    public Mpa getMpaById(@PathVariable Long id) {
+        return mpaService.getMpaById(id);
     }
 
     @GetMapping()
-    public List<Mpa> getAllRatings() {
-        return mpaService.getRatings();
+    public List<Mpa> getAllMpa() {
+        return mpaService.getAllMpa();
     }
 }

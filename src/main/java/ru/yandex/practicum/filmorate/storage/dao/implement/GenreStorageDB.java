@@ -17,7 +17,8 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class GenreStorageDB implements GenreDao {
-    JdbcTemplate jdbcTemplate;
+
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public Genre getGenreById(Long id) {
@@ -32,7 +33,7 @@ public class GenreStorageDB implements GenreDao {
 
     @Override
     public List<Genre> getGenres() {
-        String sqlRequest = "SELECT * FROM users";
+        String sqlRequest = "SELECT * FROM genres";
         return jdbcTemplate.query(sqlRequest, new GenreRowMapper());
     }
 }

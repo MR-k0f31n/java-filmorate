@@ -14,11 +14,11 @@ import java.util.List;
 public class MpaService {
     private final MpaStorageDB mpaStorageDB;
 
-    public Mpa getRatingById(Long id) {
-        return mpaStorageDB.getRatingById(id);
+    public Mpa getMpaById(Long id) {
+        return mpaStorageDB.getMpaById(id);
     }
 
-    public List<Mpa> getRatings() {
-        return mpaStorageDB.getRatings();
+    public List<Mpa> getAllMpa() {
+        return mpaStorageDB.getAllMpa();
     }
 }
