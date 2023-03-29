@@ -1,23 +1,22 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage.dao.implement;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.storage.dao.UserDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.mapper.UserRowMapper;
+import ru.yandex.practicum.filmorate.model.mapper.UserRowMapper;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
 
 @Component
 @Primary
 @Slf4j
 @RequiredArgsConstructor
-public class UserStorageDBDaoImpl implements UserStorage {
+public class UserStorageDB implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -38,52 +37,43 @@ public class UserStorageDBDaoImpl implements UserStorage {
                         user.getName(),
                         user.getBirthday()
                 );
-        return user;
+        String sqlRequestFromLogin = "SELECT * FROM users WHERE login = ?";
+        return jdbcTemplate.queryForObject(sqlRequestFromLogin, new UserRowMapper(), user.getLogin());
     }
 
     @Override
     public User updateUser(User user) {
-        if (!checkUser(user.getId())) {
-            log.warn("User not found id = '{}'", user.getId());
-            throw new NotFoundException("User not found id = {" + user.getId() + "}");
-        }
-        String sqlRequest = "INSERT INTO (user_id, email, login, name, birthday) users VALUES (?,?,?,?,?)";
         getUserById(user.getId());
+        String sqlRequest = "UPDATE users " +
+                "SET email = ?, login = ?, name = ?, birthday = ? " +
+                "WHERE user_id = ?";
         jdbcTemplate.update
                 (
                         sqlRequest,
-                        user.getId(),
                         user.getEmail(),
                         user.getLogin(),
                         user.getName(),
-                        user.getBirthday()
+                        user.getBirthday(),
+                        user.getId()
                 );
         return getUserById(user.getId());
     }
 
     @Override
     public void deleteUser(Long id) {
-        if (!checkUser(id)) {
-            log.warn("User not found id = '{}'", id);
-            throw new NotFoundException("User not found id = {" + id + "}");
-        }
-        String sqlRequest = "DELETE FROM users WHERE id = ?";
+        getUserById(id);
+        String sqlRequest = "DELETE FROM users WHERE user_id = ?";
         jdbcTemplate.update(sqlRequest, id);
     }
 
     @Override
     public User getUserById(Long id) {
-        if (!checkUser(id)) {
-            log.warn("User not found id = '{}'", id);
-            throw new NotFoundException("User not found id = {" + id + "}");
+        try {
+            String sqlRequest = "SELECT * FROM users WHERE user_id = ?";
+            return jdbcTemplate.queryForObject(sqlRequest, new UserRowMapper(), id);
+        } catch (Throwable exception) {
+            log.warn("Не удалось найти пользователя id = '{}'", id);
+            throw new NotFoundException ("Не удалось найти пользователя id = " + id);
         }
-        String sqlRequest = "SELECT * FROM users WHERE user_id = ?";
-        return jdbcTemplate.queryForObject(sqlRequest, new UserRowMapper(), id);
-    }
-
-    @Override
-    public boolean checkUser(Long id) {
-        String sqlRequest = "SELECT * FROM users WHERE user_id = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sqlRequest, new UserRowMapper(), id)).isPresent();
     }
 }

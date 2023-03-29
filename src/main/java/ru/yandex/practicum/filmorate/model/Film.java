@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.validator.customInterface.DateAfterCinemaBirthday;
+import ru.yandex.practicum.filmorate.model.validator.customInterface.DateAfterCinemaBirthday;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -17,7 +17,7 @@ public class Film {
     @Positive
     private Long id;
     @NotBlank(message = "Поле name не может быть пустым")
-    private String title;
+    private String name;
     @NotBlank(message = "Поле description не может быть пустым")
     @Size(message = "Поле description имеет максимальное число символов: " + MAX_LENGTH_DESCRIPTION,
             max = MAX_LENGTH_DESCRIPTION)
@@ -27,7 +27,7 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "должно быть больше 0")
     private Long duration;
-    private Set<Long> genre;
-    private Set<Long> userLike;
-    private Long rating;
+    private Set<Genre> genre;
+    private Set<User> userLike;
+    private Mpa mpa;
 }

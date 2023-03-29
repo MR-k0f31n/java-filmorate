@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filmorate.storage.implement;
+package ru.yandex.practicum.filmorate.storage.inMemory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.dao.FilmDao;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 @Component
 @Slf4j
-public class InMemoryFilmStorage implements FilmStorage {
+public class InMemoryFilmDao implements FilmDao {
 
     private long currencyIdFilm = 1;
     private final Map<Long, Film> films = new HashMap<>();
@@ -31,7 +31,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         film.setId(currencyIdFilm++);
         films.put(film.getId(), film);
         log.info("Фильм с name '{}' успешно записан, присвоен id '{}'",
-                film.getTitle(), film.getId());
+                film.getName(), film.getId());
         return film;
     }
 
@@ -42,7 +42,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         films.put(film.getId(), film);
         log.info("Фильм id name '{} {}' успешно Обновлен",
-                film.getId(), film.getTitle());
+                film.getId(), film.getName());
         return film;
     }
 
@@ -51,7 +51,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (!checkFilm(id)) {
             throw new NotFoundException("Фильм не найден id " + id);
         }
-        log.info("Фильм id '{}' name '{}' удален", id, films.get(id).getTitle());
+        log.info("Фильм id '{}' name '{}' удален", id, films.get(id).getName());
         films.remove(id);
     }
 
@@ -63,8 +63,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return films.get(id);
     }
 
-    @Override
-    public boolean checkFilm(Long id) {
+    private boolean checkFilm(Long id) {
         return films.containsKey(id);
     }
 }

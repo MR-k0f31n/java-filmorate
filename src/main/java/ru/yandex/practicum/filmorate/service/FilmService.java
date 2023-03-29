@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.dao.FilmDao;
+import ru.yandex.practicum.filmorate.storage.dao.UserDao;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,54 +15,52 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class FilmService {
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
+    private final FilmDao filmDao;
+    private final UserDao userDao;
 
     public List<Film> getTop10Film(Long count) {
         log.trace("Попытка получить топ '{}' фильмов", count);
-        return List.copyOf(filmStorage.getAllFilm().stream()
+        return List.copyOf(filmDao.getAllFilm().stream()
                 .sorted((o1, o2) -> o2.getUserLike().size() - o1.getUserLike().size())
                 .limit(count).collect(Collectors.toList()));
     }
 
     public void addLike(Long filmId, Long userId) {
         log.trace("Попытка поставить лайк фильму id '{}' пользователем id '{}'", filmId, userId);
-        if (!userStorage.checkUser(userId)) {
-            throw new NotFoundException("Пользователь не обнаружен id " + userId);
-        }
-        filmStorage.getFilmById(filmId).getUserLike().add(userId);
+        userDao.getUserById(userId);
+        filmDao.getFilmById(filmId).getUserLike().add(userDao.getUserById(userId));
     }
 
     public void removeLike(Long filmId, Long userId) {
         log.trace("Попытка удалить лайк фильму id '{}' пользователем id '{}'", filmId, userId);
-        if (!filmStorage.getFilmById(filmId).getUserLike().contains(userId)) {
+        if (!filmDao.getFilmById(filmId).getUserLike().contains(userDao.getUserById(userId))) {
             throw new NotFoundException("Пользователь с id " + userId + " не ставил лайк");
         }
-        filmStorage.getFilmById(filmId).getUserLike().remove(userId);
+        filmDao.getFilmById(filmId).getUserLike().remove(userDao.getUserById(userId));
     }
 
     public List<Film> getAllFilm() {
         log.trace("Попытка получить все фильмы");
-        return filmStorage.getAllFilm();
+        return filmDao.getAllFilm();
     }
 
     public Film addFilm(Film film) {
-        log.trace("Попытка добавить фильм name '{}'", film.getTitle());
-        return filmStorage.addFilm(film);
+        log.trace("Попытка добавить фильм name '{}'", film.getName());
+        return filmDao.addFilm(film);
     }
 
     public Film updateFilm(Film film) {
-        log.trace("Попытка обновить фильм name '{}'", film.getTitle());
-        return filmStorage.updateFilm(film);
+        log.trace("Попытка обновить фильм name '{}'", film.getName());
+        return filmDao.updateFilm(film);
     }
 
     public void deleteFilm(Long id) {
         log.trace("Попытка удалить фильм id '{}'", id);
-        filmStorage.deleteFilm(id);
+        filmDao.deleteFilm(id);
     }
 
     public Film getFilmById(Long id) {
         log.trace("Попытка получить фильм id '{}'", id);
-        return filmStorage.getFilmById(id);
+        return filmDao.getFilmById(id);
     }
 }

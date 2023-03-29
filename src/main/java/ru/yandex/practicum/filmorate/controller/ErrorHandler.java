@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
@@ -20,13 +19,6 @@ public class ErrorHandler {
     public Map<String, String> handleNotFoundException(final NotFoundException exception) {
         log.warn("Произошло исключение NotFound сообщение ошибки '{}'", exception.getMessage());
         return Map.of("NotFound", exception.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String>  handleIncorrectParameterException(final IncorrectParameterException exception) {
-        log.warn("Произошло исключение Incorrect Parameter сообщение ошибки '{}'", exception.getMessage());
-        return Map.of("IncorrectParameter",String.format("Ошибка с полем \"%s\".", exception.getParameter()));
     }
 
     @ExceptionHandler

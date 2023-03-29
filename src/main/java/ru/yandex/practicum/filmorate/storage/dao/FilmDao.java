@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.dao;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
 
-public interface FilmStorage {
+public interface FilmDao {
     List<Film> getAllFilm();
 
     Film addFilm(Film film);
@@ -14,6 +14,4 @@ public interface FilmStorage {
     void deleteFilm(Long id);
 
     Film getFilmById(Long id);
-
-    boolean checkFilm (Long id);
 }
