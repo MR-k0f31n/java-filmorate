@@ -1,6 +1,6 @@
 # Filmorate (Rest API)
 
-## Описание проэкта
+## Описание
 Бэкэнд (rest api) аналог кинопоиск.
 Возможности:
 - Оценки фильмов (Like);
@@ -9,7 +9,7 @@
 - Добавлять пользователей в друзья;
 - Искать пользователя;
 
-## Используемые технологии
+## Технологии
 - Java 11, Lombok;
 - Spring Boot;
 - SQL;
@@ -21,41 +21,9 @@
 
 ## Примеры запросов
 
-- Получить таблицу пользователей:
-~~~~ roomsql
-SELECT * 
-FROM user
-ORDER BY id DESC
-- ~~~~
-- Получить пользователя по id: 
-~~~~ roomsql
-SELECT * 
-FROM user 
-WHERE user_id = ? , {id}
-~~~~
-- Получить друзей пользователя id:
-~~~~roomsql
-SELECT * 
-FROM user AS us_id 
-LEFT JOIN user AS us_friend ON us_id.user_id = us_friend.friend_user_id_set
-ORDER BY name DESC
-~~~~
-- Получить таблицу фильмов: 
-~~~~ roomsql
-SELECT * 
-FROM film
-ORDER BY id DESC
-~~~~
-- Получить фильм по id:
-~~~~ roomsql
-  SELECT * 
-  FROM film 
-  WHERE film_id = ?, {id}
-~~~~
-- Получить топ фильмов:
-~~~~ roomsql
-  SELECT * 
-  FROM film 
-  ORDER BY user_like ASC
-  LIMIT ? , {country}
-~~~~
+- Получить таблицу пользователей: SELECT * FROM user
+- Получить пользователя по id: SELECT * FROM user WHERE user_id = {id}
+- Получить друзей пользователя id: SELECT * FROM user AS us_id LEFT JOIN user AS us_friend ON us_id.user_id = us_friend.friend_user_id_set
+
+- Получить таблицу фильмов: SELECT * FROM film
+- Получить фильм по id: SELECT * FROM film WHERE film_id = {id}
