@@ -70,7 +70,7 @@ public class InMemoryUserDao implements UserDao {
         return users.get(id);
     }
 
-    private boolean checkUser (Long id) {
+    private boolean checkUser(Long id) {
         log.trace("check user id '{}'", id);
         return users.containsKey(id);
     }

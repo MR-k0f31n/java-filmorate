@@ -23,25 +23,25 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUserById (@PathVariable Long id) {
+    public User getUserById(@PathVariable Long id) {
         log.trace("Получен запрос к эндпоинту: 'GET /users/id'");
         return service.getUserById(id);
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> viewFriend (@PathVariable Long id) {
+    public List<User> viewFriend(@PathVariable Long id) {
         log.trace("Получен запрос к эндпоинту: 'GET /users/id/friends'");
         return service.viewUserFriend(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> commonFriends (@PathVariable Long id, @PathVariable Long otherId) {
+    public List<User> commonFriends(@PathVariable Long id, @PathVariable Long otherId) {
         log.trace("Получен запрос к эндпоинту: 'GET /users/id/friends/common/otherId'");
         return service.commonFriend(id, otherId);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend (@PathVariable Long id, @PathVariable Long friendId) {
+    public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
         log.trace("Получен запрос к эндпоинту: 'PUT /users/id/friends/friendId'");
         service.addFriend(id, friendId);
     }
@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void deleteFriend (@PathVariable Long id, @PathVariable Long friendId) {
+    public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
         log.trace("Получен запрос к эндпоинту: 'DELETE /users/id/friends/friendId'");
         service.removeFriend(id, friendId);
     }
@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @DeleteMapping
-    public void deleteUser (@PathVariable Long id) {
+    public void deleteUser(@PathVariable Long id) {
         log.trace("Получен запрос к эндпоинту: 'DELETE /users'");
         service.deleteUser(id);
     }

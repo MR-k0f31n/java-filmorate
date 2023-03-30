@@ -160,7 +160,7 @@ public class FilmValidatorTests {
                 .id(1L)
                 .name("Parry Hotter")
                 .description("This is a boy who learned to program")
-                .releaseDate(LocalDate.of(1895,12,27))
+                .releaseDate(LocalDate.of(1895, 12, 27))
                 .duration(10L)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);

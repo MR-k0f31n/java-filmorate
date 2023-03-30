@@ -117,14 +117,14 @@ public class FilmStorageDB implements FilmDao {
         }
     }
 
-    private Set<Genre> getGenreFromFilm (Long id) {
+    private Set<Genre> getGenreFromFilm(Long id) {
         String sqlRequest = "SELECT genres.genre_id, genre_name FROM film_genre " +
                 "JOIN genres ON film_genre.genre_id = genres.genre_id " +
                 "WHERE film_id = ?";
         return new HashSet<>(jdbcTemplate.query(sqlRequest, new GenreRowMapper(), id));
     }
 
-    private Set<Long> getLikeFromFilm (Long id) {
+    private Set<Long> getLikeFromFilm(Long id) {
         String sqlRequest = "SELECT user_like FROM film_like " +
                 "WHERE film_id = ?";
         return new HashSet<>(jdbcTemplate.query(sqlRequest, new UserLikeRowMapper(), id));

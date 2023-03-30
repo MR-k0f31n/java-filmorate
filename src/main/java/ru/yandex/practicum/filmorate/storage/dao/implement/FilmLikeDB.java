@@ -18,6 +18,7 @@ import java.util.Set;
 public class FilmLikeDB implements FilmLikeDao {
 
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public void addLike(Long filmId, Long userId) {
         String sqlRequest = "INSERT INTO film_like (film_id, user_like)" +
