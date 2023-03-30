@@ -32,7 +32,7 @@ public class UserValidatorTests {
     @Test
     public void userCreate_isValidTrue() {
         User user = User.builder()
-                .id(1)
+                .id(1L)
                 .email("commono@mail.net")
                 .login("Administrator")
                 .name("sudo")
@@ -47,7 +47,7 @@ public class UserValidatorTests {
     @Test
     public void userNotValidEmail_isValidFalse() {
         User user = User.builder()
-                .id(1)
+                .id(1L)
                 .email("commono?mail.net")
                 .login("Administrator")
                 .name("sudo")
@@ -61,7 +61,7 @@ public class UserValidatorTests {
     @Test
     public void userNotValidEmailIsBlank_isValidFalse() {
         User user = User.builder()
-                .id(1)
+                .id(1L)
                 .email(" ")
                 .login("Administrator")
                 .name("sudo")
@@ -75,7 +75,7 @@ public class UserValidatorTests {
     @Test
     public void userNotValidBirthDay_isValidFalse() {
         User user = User.builder()
-                .id(1)
+                .id(1L)
                 .email("commono@mail.net")
                 .login("Administrator")
                 .name("sudo")
@@ -89,7 +89,7 @@ public class UserValidatorTests {
     @Test
     public void userNotValidLogin_isValidFalse() {
         User user = User.builder()
-                .id(1)
+                .id(1L)
                 .email("commono@mail.net")
                 .login("Admin istrator")
                 .name("sudo")
@@ -103,7 +103,7 @@ public class UserValidatorTests {
     @Test
     public void userNotValidLoginIsBlank_isValidFalse() {
         User user = User.builder()
-                .id(1)
+                .id(1L)
                 .email("commono@mail.net")
                 .login("  ")
                 .name("sudo")
@@ -118,7 +118,6 @@ public class UserValidatorTests {
     public void userNotValidLoginIsNull_isValidFalse() {
         try {
             User user = User.builder()
-                    .id(1)
                     .email("commono@mail.net")
                     .login(null)
                     .name("sudo")
@@ -133,7 +132,7 @@ public class UserValidatorTests {
     @Test
     public void userValidBirthDayNow_isValidTrue() {
         User user = User.builder()
-                .id(1)
+                .id(1L)
                 .email("commono@mail.net")
                 .login("Administrator")
                 .name("sudo")

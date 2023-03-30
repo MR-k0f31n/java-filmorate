@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.mapper.FriendRowMapper;
 import ru.yandex.practicum.filmorate.storage.dao.FriendsDao;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Component

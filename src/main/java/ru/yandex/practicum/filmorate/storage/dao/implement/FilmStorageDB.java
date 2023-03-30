@@ -43,11 +43,23 @@ public class FilmStorageDB implements FilmDao {
                 (
                         sqlRequest,
                         film.getName(),
-                        film.getDuration(),
+                        film.getDescription(),
                         film.getReleaseDate(),
                         film.getDuration(),
                         film.getMpa().getId()
                 );
+        if (film.getGenres() != null) {
+            sqlRequest = "SELECT * " +
+                    "FROM films " +
+                    "JOIN mpa ON films.mpa = mpa.mpa_id " +
+                    "WHERE film_name = ? ";
+            Long filmId = jdbcTemplate.queryForObject(sqlRequest, new FilmRowMapper(), film.getName()).getId();
+            sqlRequest = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
+            for (Genre genre : film.getGenres()) {
+                jdbcTemplate.update(sqlRequest, filmId, genre.getId());
+            }
+            return getFilmById(filmId);
+        }
         sqlRequest = "SELECT * " +
                 "FROM films " +
                 "JOIN mpa ON films.mpa = mpa.mpa_id " +
@@ -71,6 +83,14 @@ public class FilmStorageDB implements FilmDao {
                         film.getMpa().getId(),
                         film.getId()
                 );
+        if (film.getGenres() != null) {
+            sqlRequest = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?;";
+            jdbcTemplate.update(sqlRequest, film.getId());
+            sqlRequest = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?);";
+            for (Genre genre : film.getGenres()) {
+                jdbcTemplate.update(sqlRequest, film.getId(), genre.getId());
+            }
+        }
         return getFilmById(film.getId());
     }
 

@@ -5,14 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.dao.GenreDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.mapper.GenreRowMapper;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
-import java.util.Set;
 
 @Component
 @Primary
@@ -35,26 +33,7 @@ public class GenreStorageDB implements GenreDao {
 
     @Override
     public List<Genre> getGenres() {
-        String sqlRequest = "SELECT * FROM genres";
+        String sqlRequest = "SELECT * FROM genres ORDER BY genre_id ASC";
         return jdbcTemplate.query(sqlRequest, new GenreRowMapper());
-    }
-
-    @Override
-    public void addGenreFilm(Film film) {
-        String sqlRequest = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
-        Long idFilm = film.getId();
-        for (Genre genre : film.getGenres()) {
-            jdbcTemplate.update(sqlRequest, idFilm, genre.getId());
-        }
-
-    }
-
-    @Override
-    public void removeGenreFilm(Film film) {
-        String sqlRequest = "DELETE FROM film_genre WHERE film_id = ? AND genre_id = ? ";
-        Long idFilm = film.getId();
-        for (Genre genre : film.getGenres()) {
-            jdbcTemplate.update(sqlRequest, idFilm, genre.getId());
-        }
     }
 }

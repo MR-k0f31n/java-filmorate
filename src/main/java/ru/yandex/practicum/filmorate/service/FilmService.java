@@ -3,11 +3,9 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.dao.FilmDao;
 import ru.yandex.practicum.filmorate.storage.dao.FilmLikeDao;
-import ru.yandex.practicum.filmorate.storage.dao.GenreDao;
 import ru.yandex.practicum.filmorate.storage.dao.UserDao;
 
 import java.util.List;
@@ -19,10 +17,7 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final FilmDao filmDao;
     private final UserDao userDao;
-
     private final FilmLikeDao filmLikeDao;
-
-    private final GenreDao genreDao;
 
     public List<Film> getTop10Film(Long count) {
         log.trace("Попытка получить топ '{}' фильмов", count);
@@ -52,9 +47,6 @@ public class FilmService {
 
     public Film addFilm(Film film) {
         log.trace("Попытка добавить фильм name '{}'", film.getName());
-        if (film.getGenres().size() != 0) {
-            genreDao.addGenreFilm(film);
-        }
         return filmDao.addFilm(film);
     }
 

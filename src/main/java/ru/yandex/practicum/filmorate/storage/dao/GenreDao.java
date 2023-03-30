@@ -10,8 +10,4 @@ public interface GenreDao {
     Genre getGenreById(Long id);
 
     List<Genre> getGenres();
-
-    void addGenreFilm(Film film);
-
-    void removeGenreFilm(Film film);
 }

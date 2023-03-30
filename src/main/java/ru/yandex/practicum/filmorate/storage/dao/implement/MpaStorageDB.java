@@ -34,7 +34,7 @@ public class MpaStorageDB implements MpaDao {
 
     @Override
     public List<Mpa> getAllMpa() {
-        String sqlRequest = "SELECT * FROM mpa";
+        String sqlRequest = "SELECT * FROM mpa ORDER BY mpa_id ASC";
         return jdbcTemplate.query(sqlRequest, new MpaRowMapper());
     }
 }

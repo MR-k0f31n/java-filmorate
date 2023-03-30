@@ -14,19 +14,19 @@ INSERT INTO mpa (mpa_name)
 VALUES ('NC-17');
 
 INSERT INTO genres (genre_name)
-VALUES ('Боевик');
-
-INSERT INTO genres (genre_name)
-VALUES ('Вестерн');
-
-INSERT INTO genres (genre_name)
-VALUES ('Детектив');
+VALUES ('Комедия');
 
 INSERT INTO genres (genre_name)
 VALUES ('Драма');
 
 INSERT INTO genres (genre_name)
-VALUES ('Мультик');
+VALUES ('Мультфильм');
 
 INSERT INTO genres (genre_name)
-VALUES ('Фэнтези');
+VALUES ('Триллер');
+
+INSERT INTO genres (genre_name)
+VALUES ('Документальный');
+
+INSERT INTO genres (genre_name)
+VALUES ('Боевик');

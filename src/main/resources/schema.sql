@@ -38,20 +38,19 @@ CREATE TABLE IF NOT EXISTS genres (
 );
 
 CREATE TABLE IF NOT EXISTS film_like (
-        film_id INTEGER REFERENCES films (film_id),
-        user_like INTEGER REFERENCES users (user_id),
+        film_id INTEGER REFERENCES films (film_id) ON DELETE CASCADE,
+        user_like INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
         PRIMARY KEY (film_id, user_like)
 );
 
 CREATE TABLE IF NOT EXISTS film_genre (
-    film_id INTEGER REFERENCES films (film_id),
-    genre_id INTEGER REFERENCES genres (genre_id),
-    PRIMARY KEY (film_id, genre_id)
+    film_id INTEGER REFERENCES films (film_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    genre_id INTEGER REFERENCES genres (genre_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT FILM_GENRE_PK PRIMARY KEY (FILM_ID, GENRE_ID)
 );
 
 CREATE TABLE IF NOT EXISTS friends (
-    user_id INTEGER REFERENCES users (user_id),
-    friend_id INTEGER REFERENCES users (user_id),
-    CONSTRAINT validate_request CHECK (user_id <> friend_id),
-    PRIMARY KEY (user_id, friend_id)
+    user_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    friend_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT validate_request CHECK (user_id <> friend_id)
 );
