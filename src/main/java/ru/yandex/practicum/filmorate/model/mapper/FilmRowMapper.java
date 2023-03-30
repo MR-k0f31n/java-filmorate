@@ -11,16 +11,15 @@ import java.util.HashSet;
 public class FilmRowMapper implements RowMapper<Film> {
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Film
-                (
-                        rs.getLong("film_id"),
-                        rs.getString("film_name"),
-                        rs.getString("description"),
-                        rs.getDate("release_date").toLocalDate(),
-                        rs.getLong("duration"),
-                        new HashSet<>(),
-                        new HashSet<>(),
-                        new Mpa(rs.getLong("mpa_id"), rs.getString("mpa_name"))
-                );
+        return new Film(
+                rs.getLong("film_id"),
+                rs.getString("film_name"),
+                rs.getString("description"),
+                rs.getDate("release_date").toLocalDate(),
+                rs.getLong("duration"),
+                new HashSet<>(),
+                new HashSet<>(),
+                new Mpa(rs.getLong("mpa_id"), rs.getString("mpa_name"))
+        );
     }
 }
