@@ -13,14 +13,13 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class Film {
-    private final static int MAX_LENGTH_DESCRIPTION = 200;
     @Positive
     private Long id;
     @NotBlank(message = "Поле name не может быть пустым")
     private String name;
     @NotBlank(message = "Поле description не может быть пустым")
-    @Size(message = "Поле description имеет максимальное число символов: " + MAX_LENGTH_DESCRIPTION,
-            max = MAX_LENGTH_DESCRIPTION)
+    @Size(message = "Поле description имеет максимальное число символов: " + 200,
+            max = 200)
     private String description;
     @PastOrPresent(message = "Поле releaseDate некорректно")
     @DateAfterCinemaBirthday(message = "Поле releaseDate некорректно дата первого кино: 28.12.1895")
