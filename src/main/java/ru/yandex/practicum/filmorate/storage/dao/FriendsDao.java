@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorate.storage.dao;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public interface Friends {
+public interface FriendsDao {
     void addFriend (Long userId, Long friendId);
     void removeFriend (Long userId, Long friendId);
-    HashSet<Long> getAllFriendUserById (Long userId);
-    List<Boolean> checkStatus(Long userId, Long friendId);
+    Set<Long> getAllFriendUserById (Long userId);
 }

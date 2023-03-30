@@ -11,7 +11,8 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 import java.util.Map;
 
-@RestControllerAdvice(assignableTypes = {UserController.class, FilmController.class})
+@RestControllerAdvice(assignableTypes = {UserController.class, FilmController.class,
+        MpaController.class, GenreController.class})
 @Slf4j
 public class ErrorHandler {
 

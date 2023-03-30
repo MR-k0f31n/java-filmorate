@@ -24,12 +24,19 @@ public class UserStorageDB implements UserDao {
     @Override
     public List<User> getAllUser() {
         String sqlRequest = "SELECT * FROM users";
-        return jdbcTemplate.query(sqlRequest, new UserRowMapper());
+        List<User> users = jdbcTemplate.query(sqlRequest, new UserRowMapper());
+        users.forEach(id -> {
+            id.getFriends().addAll(friendStorageDB.getAllFriendUserById(id.getId()));
+        });
+        return users;
     }
 
     @Override
     public User addUser(User user) {
         String sqlRequest = "INSERT INTO users (email, login, name, birthday) VALUES (?,?,?,?)";
+        if (user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
         jdbcTemplate.update
                 (
                         sqlRequest,
@@ -38,8 +45,8 @@ public class UserStorageDB implements UserDao {
                         user.getName(),
                         user.getBirthday()
                 );
-        String sqlRequestFromLogin = "SELECT * FROM users WHERE login = ?";
-        return jdbcTemplate.queryForObject(sqlRequestFromLogin, new UserRowMapper(), user.getLogin());
+        sqlRequest = "SELECT * FROM users WHERE login = ?";
+        return jdbcTemplate.queryForObject(sqlRequest, new UserRowMapper(), user.getLogin());
     }
 
     @Override
@@ -73,11 +80,10 @@ public class UserStorageDB implements UserDao {
             String sqlRequest = "SELECT * FROM users WHERE user_id = ?";
             User user = jdbcTemplate.queryForObject(sqlRequest, new UserRowMapper(), id);
             user.getFriends().addAll(friendStorageDB.getAllFriendUserById(id));
-            System.out.println(user);
             return user;
         } catch (Throwable exception) {
             log.warn("Не удалось найти пользователя id = '{}'", id);
-            throw new NotFoundException ("Не удалось найти пользователя id = " + id);
+            throw new NotFoundException("Не удалось найти пользователя id = " + id);
         }
     }
 }

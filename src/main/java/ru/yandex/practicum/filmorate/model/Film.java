@@ -27,7 +27,7 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "должно быть больше 0")
     private Long duration;
-    private Set<Genre> genre;
-    private Set<User> userLike;
+    private Set<Genre> genres;
+    private Set<Long> userLike;
     private Mpa mpa;
 }

@@ -27,8 +27,8 @@ public class MpaStorageDB implements MpaDao {
             String sqlRequest = "SELECT * FROM mpa WHERE mpa_id = ?";
             return jdbcTemplate.queryForObject(sqlRequest, new MpaRowMapper(), id);
         } catch (EmptyResultDataAccessException exception) {
-            log.warn("vse ploho");
-            throw new NotFoundException("vse ploho");
+            log.warn("Не удалось найти MPA рейтинг id = '{}'", id);
+            throw new NotFoundException("Не удалось найти MPA рейтинг id = '" + id + "'");
         }
     }
 

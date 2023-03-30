@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.dao.FilmDao;
+import ru.yandex.practicum.filmorate.storage.dao.FilmLikeDao;
+import ru.yandex.practicum.filmorate.storage.dao.GenreDao;
 import ru.yandex.practicum.filmorate.storage.dao.UserDao;
 
 import java.util.List;
@@ -18,9 +20,13 @@ public class FilmService {
     private final FilmDao filmDao;
     private final UserDao userDao;
 
+    private final FilmLikeDao filmLikeDao;
+
+    private final GenreDao genreDao;
+
     public List<Film> getTop10Film(Long count) {
         log.trace("Попытка получить топ '{}' фильмов", count);
-        return List.copyOf(filmDao.getAllFilm().stream()
+        return List.copyOf(getAllFilm().stream()
                 .sorted((o1, o2) -> o2.getUserLike().size() - o1.getUserLike().size())
                 .limit(count).collect(Collectors.toList()));
     }
@@ -28,15 +34,15 @@ public class FilmService {
     public void addLike(Long filmId, Long userId) {
         log.trace("Попытка поставить лайк фильму id '{}' пользователем id '{}'", filmId, userId);
         userDao.getUserById(userId);
-        filmDao.getFilmById(filmId).getUserLike().add(userDao.getUserById(userId));
+        filmDao.getFilmById(filmId);
+        filmLikeDao.addLike(filmId, userId);
     }
 
     public void removeLike(Long filmId, Long userId) {
         log.trace("Попытка удалить лайк фильму id '{}' пользователем id '{}'", filmId, userId);
-        if (!filmDao.getFilmById(filmId).getUserLike().contains(userDao.getUserById(userId))) {
-            throw new NotFoundException("Пользователь с id " + userId + " не ставил лайк");
-        }
-        filmDao.getFilmById(filmId).getUserLike().remove(userDao.getUserById(userId));
+        userDao.getUserById(userId);
+        filmDao.getFilmById(filmId);
+        filmLikeDao.removeLike(filmId, userId);
     }
 
     public List<Film> getAllFilm() {
@@ -46,6 +52,9 @@ public class FilmService {
 
     public Film addFilm(Film film) {
         log.trace("Попытка добавить фильм name '{}'", film.getName());
+        if (film.getGenres().size() != 0) {
+            genreDao.addGenreFilm(film);
+        }
         return filmDao.addFilm(film);
     }
 

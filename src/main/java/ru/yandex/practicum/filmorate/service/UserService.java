@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.dao.FriendsDao;
 import ru.yandex.practicum.filmorate.storage.dao.UserDao;
 
 import java.util.ArrayList;
@@ -17,24 +18,28 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserDao userDao;
+    private final FriendsDao friendsDao;
 
-    public void addFriend(Long userId, Long friendID) {
+    public void addFriend(Long userId, Long friendId) {
         log.trace("Попытка добавить в друзья");
-        userDao.getUserById(userId).getFriends().add(friendID);
-        log.info("Пользователи id '{}' добавил пользователя id '{}' друзья", userId, friendID);
+        getUserById(userId);
+        getUserById(friendId);
+        friendsDao.addFriend(userId, friendId);
+        log.info("Пользователи id '{}' добавил пользователя id '{}' друзья", userId, friendId);
     }
 
-    public void removeFriend(Long userId, Long friendID) {
+    public void removeFriend(Long userId, Long friendId) {
         log.trace("Попытка удалить из друзей");
-        userDao.getUserById(userId).getFriends().remove(friendID);
-        userDao.getUserById(friendID).getFriends().remove(userId);
-        log.info("Пользователи id '{}' и id '{}' не друзья", userId, friendID);
+        getUserById(userId);
+        getUserById(friendId);
+        friendsDao.removeFriend(userId, friendId);
+        log.info("Пользователи id '{}' и id '{}' не друзья", userId, friendId);
     }
 
     public List<User> commonFriend(Long userId, Long otherId) {
         log.trace("Попытка получить список общих друзей");
         User otherUser = getUserById(otherId);
-        Set<Long> commonFriendsId = userDao.getUserById(userId).getFriends()
+        Set<Long> commonFriendsId = getUserById(userId).getFriends()
                 .stream().filter(otherUser.getFriends()::contains)
                 .collect(Collectors.toSet());
         return getAllUser().stream().filter(user -> commonFriendsId.contains(user.getId()))
@@ -65,7 +70,7 @@ public class UserService {
         userDao.getUserById(userId);
         List<User> list = new ArrayList<>();
         userDao.getUserById(userId).getFriends().forEach(id -> {
-            list.add(userDao.getUserById(id));
+            list.add(getUserById(id));
         });
         log.trace("Попытка посмотреть список друзей пользователя id '{}'", userId);
         return list;
