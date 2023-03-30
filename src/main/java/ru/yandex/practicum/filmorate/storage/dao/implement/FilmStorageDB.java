@@ -39,15 +39,14 @@ public class FilmStorageDB implements FilmDao {
     public Film addFilm(Film film) {
         String sqlRequest = "INSERT INTO films (film_name, description, release_date, duration, mpa) " +
                 "values (?, ?, ?, ?, ?)";
-        jdbcTemplate.update
-                (
-                        sqlRequest,
-                        film.getName(),
-                        film.getDescription(),
-                        film.getReleaseDate(),
-                        film.getDuration(),
-                        film.getMpa().getId()
-                );
+        jdbcTemplate.update(
+                sqlRequest,
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getMpa().getId()
+        );
         if (film.getGenres() != null) {
             sqlRequest = "SELECT * " +
                     "FROM films " +
@@ -73,16 +72,15 @@ public class FilmStorageDB implements FilmDao {
         String sqlRequest = "UPDATE films " +
                 "SET film_name = ?, description = ?, release_date = ?, duration = ?, mpa = ? " +
                 "WHERE film_id = ?";
-        jdbcTemplate.update
-                (
-                        sqlRequest,
-                        film.getName(),
-                        film.getDescription(),
-                        film.getReleaseDate(),
-                        film.getDuration(),
-                        film.getMpa().getId(),
-                        film.getId()
-                );
+        jdbcTemplate.update(
+                sqlRequest,
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getMpa().getId(),
+                film.getId()
+        );
         if (film.getGenres() != null) {
             sqlRequest = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?;";
             jdbcTemplate.update(sqlRequest, film.getId());

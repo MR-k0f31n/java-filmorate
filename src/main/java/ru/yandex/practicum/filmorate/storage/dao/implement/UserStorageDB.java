@@ -37,14 +37,13 @@ public class UserStorageDB implements UserDao {
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        jdbcTemplate.update
-                (
-                        sqlRequest,
-                        user.getEmail(),
-                        user.getLogin(),
-                        user.getName(),
-                        user.getBirthday()
-                );
+        jdbcTemplate.update(
+                sqlRequest,
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                user.getBirthday()
+        );
         sqlRequest = "SELECT * FROM users WHERE login = ?";
         return jdbcTemplate.queryForObject(sqlRequest, new UserRowMapper(), user.getLogin());
     }
@@ -55,15 +54,14 @@ public class UserStorageDB implements UserDao {
         String sqlRequest = "UPDATE users " +
                 "SET email = ?, login = ?, name = ?, birthday = ? " +
                 "WHERE user_id = ?";
-        jdbcTemplate.update
-                (
-                        sqlRequest,
-                        user.getEmail(),
-                        user.getLogin(),
-                        user.getName(),
-                        user.getBirthday(),
-                        user.getId()
-                );
+        jdbcTemplate.update(
+                sqlRequest,
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                user.getBirthday(),
+                user.getId()
+        );
         return getUserById(user.getId());
     }
 
