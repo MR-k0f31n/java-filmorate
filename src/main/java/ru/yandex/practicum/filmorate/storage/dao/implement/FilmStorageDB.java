@@ -26,6 +26,7 @@ public class FilmStorageDB implements FilmDao {
 
     @Override
     public List<Film> getAllFilm() {
+        log.info("Запрошен список фильмов");
         String sqlRequest = "SELECT * FROM films JOIN mpa ON films.mpa = mpa.mpa_id";
         List<Film> list = jdbcTemplate.query(sqlRequest, new FilmRowMapper());
         list.forEach(id -> {
@@ -57,6 +58,7 @@ public class FilmStorageDB implements FilmDao {
             for (Genre genre : film.getGenres()) {
                 jdbcTemplate.update(sqlRequest, filmId, genre.getId());
             }
+            log.info("Фильм с name '{}' успешно записан, присвоен id '{}'", film.getName(), filmId);
             return getFilmById(filmId);
         }
         sqlRequest = "SELECT * " +
@@ -89,6 +91,7 @@ public class FilmStorageDB implements FilmDao {
                 jdbcTemplate.update(sqlRequest, film.getId(), genre.getId());
             }
         }
+        log.info("Фильм с name '{}' успешно записан, id '{}'", film.getName(), film.getId());
         return getFilmById(film.getId());
     }
 
@@ -97,6 +100,7 @@ public class FilmStorageDB implements FilmDao {
         getFilmById(id);
         String sqlRequest = "DELETE FROM films WHERE film_id = ?";
         jdbcTemplate.update(sqlRequest, id);
+        log.info("Фильм id '{}' удален", id);
     }
 
     @Override
@@ -108,6 +112,7 @@ public class FilmStorageDB implements FilmDao {
             Film film = jdbcTemplate.queryForObject(sqlRequest, new FilmRowMapper(), id);
             film.getGenres().addAll(getGenreFromFilm(id));
             film.getUserLike().addAll(getLikeFromFilm(id));
+            log.info("Найден фильм name '{}' id '{}'",film.getName(), film.getId());
             return film;
         } catch (Throwable exception) {
             log.warn("Фильм с id = " + id + " не найден");

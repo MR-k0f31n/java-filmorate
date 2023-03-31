@@ -20,11 +20,13 @@ public class MpaController {
 
     @GetMapping("/{id}")
     public Mpa getMpaById(@PathVariable Long id) {
+        log.trace("Получен запрос к эндпоинту: 'GET /mpa/id'");
         return mpaService.getMpaById(id);
     }
 
     @GetMapping()
     public List<Mpa> getAllMpa() {
+        log.trace("Получен запрос к эндпоинту: 'GET /mpa'");
         return mpaService.getAllMpa();
     }
 }

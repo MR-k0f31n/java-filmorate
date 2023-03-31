@@ -25,6 +25,7 @@ public class MpaStorageDB implements MpaDao {
     public Mpa getMpaById(Long id) {
         try {
             String sqlRequest = "SELECT * FROM mpa WHERE mpa_id = ?";
+            log.info("Найден мировой возрастной рентинг id '{}'", id);
             return jdbcTemplate.queryForObject(sqlRequest, new MpaRowMapper(), id);
         } catch (EmptyResultDataAccessException exception) {
             log.warn("Не удалось найти MPA рейтинг id = '{}'", id);
@@ -35,6 +36,7 @@ public class MpaStorageDB implements MpaDao {
     @Override
     public List<Mpa> getAllMpa() {
         String sqlRequest = "SELECT * FROM mpa ORDER BY mpa_id ASC";
+        log.info("Вернуть весь список моровых возрастных рейтингов");
         return jdbcTemplate.query(sqlRequest, new MpaRowMapper());
     }
 }

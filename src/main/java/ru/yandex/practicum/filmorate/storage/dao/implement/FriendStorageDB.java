@@ -23,17 +23,20 @@ public class FriendStorageDB implements FriendsDao {
         String sqlRequest = "INSERT INTO friends (user_id, friend_id)" +
                 "VALUES (?,?)";
         jdbcTemplate.update(sqlRequest, userId, friendId);
+        log.info("Добавление пользователя id '{}' в друзья к id '{}'", friendId, userId);
     }
 
     @Override
     public void removeFriend(Long userId, Long friendId) {
         String sqlRequest = "DELETE FROM friends WHERE user_id = ? AND friend_id = ? ";
         jdbcTemplate.update(sqlRequest, userId, friendId);
+        log.info("Удаление пользователя id '{}' из друзей у id '{}'", friendId, userId);
     }
 
     @Override
     public Set<Long> getAllFriendUserById(Long userId) {
         String sqlQuery = "SELECT friend_id FROM friends WHERE user_id = ?";
+        log.info("Вернули весь список друзей пользователя id '{}'", userId);
         return new HashSet<>(jdbcTemplate.query(sqlQuery, new FriendRowMapper(), userId));
     }
 }

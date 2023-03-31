@@ -24,18 +24,21 @@ public class FilmLikeDB implements FilmLikeDao {
         String sqlRequest = "INSERT INTO film_like (film_id, user_like)" +
                 "VALUES (?,?)";
         jdbcTemplate.update(sqlRequest, filmId, userId);
+        log.info("Добавлен Like фильму id '{}' от пользователя id '{}'", filmId, userId);
     }
 
     @Override
     public void removeLike(Long filmId, Long userId) {
         String sqlRequest = "DELETE FROM film_like WHERE film_id = ? AND user_like = ? ";
         jdbcTemplate.update(sqlRequest, filmId, userId);
+        log.info("Like удален фильм id '{}' от пользователь id '{}'", filmId, userId);
     }
 
     @Override
     public Set<Long> userLikeByFilmId(Long filmId) {
         String sqlRequest = "SELECT user_like FROM film_like " +
                 "WHERE film_id = ?";
+        log.info("Найдены все Like для фильма id '{}'", filmId);
         return new HashSet<>(jdbcTemplate.query(sqlRequest, new UserLikeRowMapper(), filmId));
     }
 }

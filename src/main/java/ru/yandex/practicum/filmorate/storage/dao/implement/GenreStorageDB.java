@@ -24,6 +24,7 @@ public class GenreStorageDB implements GenreDao {
     public Genre getGenreById(Long id) {
         try {
             String sqlRequest = "SELECT * FROM genres WHERE genre_id = ?";
+            log.info("Жанр id '{}' найден", id);
             return jdbcTemplate.queryForObject(sqlRequest, new GenreRowMapper(), id);
         } catch (Throwable exception) {
             log.warn("Не удалось найти жанр id = '{}'", id);
@@ -34,6 +35,7 @@ public class GenreStorageDB implements GenreDao {
     @Override
     public List<Genre> getGenres() {
         String sqlRequest = "SELECT * FROM genres ORDER BY genre_id ASC";
+        log.info("Вернуть весь список жанров");
         return jdbcTemplate.query(sqlRequest, new GenreRowMapper());
     }
 }

@@ -28,6 +28,7 @@ public class UserStorageDB implements UserDao {
         users.forEach(id -> {
             id.getFriends().addAll(friendStorageDB.getAllFriendUserById(id.getId()));
         });
+        log.info("Вернуть список всех пользователей размер списка '{}'", users.size());
         return users;
     }
 
@@ -36,6 +37,7 @@ public class UserStorageDB implements UserDao {
         String sqlRequest = "INSERT INTO users (email, login, name, birthday) VALUES (?,?,?,?)";
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
+            log.info("У user пустое имя, присвоен вместо имени присвоен login '{}'", user.getLogin());
         }
         jdbcTemplate.update(
                 sqlRequest,
@@ -45,6 +47,7 @@ public class UserStorageDB implements UserDao {
                 user.getBirthday()
         );
         sqlRequest = "SELECT * FROM users WHERE login = ?";
+        log.info("User успешно создан user login '{}'", user.getLogin());
         return jdbcTemplate.queryForObject(sqlRequest, new UserRowMapper(), user.getLogin());
     }
 
@@ -62,6 +65,7 @@ public class UserStorageDB implements UserDao {
                 user.getBirthday(),
                 user.getId()
         );
+        log.info("User id '{}' успешно обновлен", user.getId());
         return getUserById(user.getId());
     }
 
@@ -70,6 +74,7 @@ public class UserStorageDB implements UserDao {
         getUserById(id);
         String sqlRequest = "DELETE FROM users WHERE user_id = ?";
         jdbcTemplate.update(sqlRequest, id);
+        log.info("User id '{}' успешно удален", id);
     }
 
     @Override
@@ -78,6 +83,7 @@ public class UserStorageDB implements UserDao {
             String sqlRequest = "SELECT * FROM users WHERE user_id = ?";
             User user = jdbcTemplate.queryForObject(sqlRequest, new UserRowMapper(), id);
             user.getFriends().addAll(friendStorageDB.getAllFriendUserById(id));
+            log.info("Найден user с id '{}' имя '{}'", id, user.getName());
             return user;
         } catch (Throwable exception) {
             log.warn("Не удалось найти пользователя id = '{}'", id);

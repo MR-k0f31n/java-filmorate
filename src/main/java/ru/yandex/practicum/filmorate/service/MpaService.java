@@ -15,10 +15,12 @@ public class MpaService {
     private final MpaStorageDB mpaStorageDB;
 
     public Mpa getMpaById(Long id) {
+        log.trace("Попытка получить мировой возрастной рейнтинг id '{}'", id);
         return mpaStorageDB.getMpaById(id);
     }
 
     public List<Mpa> getAllMpa() {
+        log.trace("Попытка получить список всех мировых возрастных рейнтингов");
         return mpaStorageDB.getAllMpa();
     }
 }

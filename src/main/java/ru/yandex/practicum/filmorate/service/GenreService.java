@@ -15,10 +15,12 @@ public class GenreService {
     private final GenreStorageDB genreStorageDB;
 
     public Genre getGenreById(Long id) {
+        log.trace("Попытка получить жанр id '{}'", id);
         return genreStorageDB.getGenreById(id);
     }
 
     public List<Genre> getGenres() {
+        log.trace("Попытка получить список всех жанров");
         return genreStorageDB.getGenres();
     }
 }
