@@ -30,8 +30,6 @@ public class UserService {
 
     public void removeFriend(Long userId, Long friendId) {
         log.trace("Попытка удалить из друзей");
-        getUserById(userId);
-        getUserById(friendId);
         friendsDao.removeFriend(userId, friendId);
         log.info("Пользователи id '{}' и id '{}' не друзья", userId, friendId);
     }

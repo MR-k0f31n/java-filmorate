@@ -35,8 +35,6 @@ public class FilmService {
 
     public void removeLike(Long filmId, Long userId) {
         log.trace("Попытка удалить лайк фильму id '{}' пользователем id '{}'", filmId, userId);
-        userDao.getUserById(userId);
-        filmDao.getFilmById(filmId);
         filmLikeDao.removeLike(filmId, userId);
     }
 

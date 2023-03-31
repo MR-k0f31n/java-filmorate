@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.mapper.GenreRowMapper;
@@ -71,9 +72,9 @@ public class FilmStorageDB implements FilmDao {
     @Override
     public Film updateFilm(Film film) {
         getFilmById(film.getId());
-        String sqlRequest = "UPDATE films " +
-                "SET film_name = ?, description = ?, release_date = ?, duration = ?, mpa = ? " +
-                "WHERE film_id = ?";
+        String sqlRequest = "UPDATE FILMS " +
+                "SET FILM_NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA = ? " +
+                "WHERE FILM_ID = ?;";
         jdbcTemplate.update(
                 sqlRequest,
                 film.getName(),
@@ -84,10 +85,10 @@ public class FilmStorageDB implements FilmDao {
                 film.getId()
         );
         if (film.getGenres() != null) {
-            sqlRequest = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?;";
-            jdbcTemplate.update(sqlRequest, film.getId());
-            sqlRequest = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?);";
+            sqlRequest = "DELETE FROM FILM_GENRE WHERE FILM_ID = ? AND GENRE_ID IN (SELECT GENRE_ID  FROM FILM_GENRE fg WHERE FILM_ID = ?)";
+            jdbcTemplate.update(sqlRequest, film.getId(), film.getId());
             for (Genre genre : film.getGenres()) {
+                sqlRequest = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?);";
                 jdbcTemplate.update(sqlRequest, film.getId(), genre.getId());
             }
         }
@@ -112,7 +113,7 @@ public class FilmStorageDB implements FilmDao {
             Film film = jdbcTemplate.queryForObject(sqlRequest, new FilmRowMapper(), id);
             film.getGenres().addAll(getGenreFromFilm(id));
             film.getUserLike().addAll(getLikeFromFilm(id));
-            log.info("Найден фильм name '{}' id '{}'",film.getName(), film.getId());
+            log.info("Найден фильм name '{}' id '{}'", film.getName(), film.getId());
             return film;
         } catch (Throwable exception) {
             log.warn("Фильм с id = " + id + " не найден");

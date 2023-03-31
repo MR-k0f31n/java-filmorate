@@ -27,8 +27,6 @@ CREATE TABLE IF NOT EXISTS films (
     description VARCHAR(200),
     release_date DATE NOT NULL,
     duration INTEGER NOT NULL,
-    genre INTEGER,
-    user_like INTEGER,
     mpa INTEGER REFERENCES mpa (mpa_id)
 );
 
@@ -38,19 +36,27 @@ CREATE TABLE IF NOT EXISTS genres (
 );
 
 CREATE TABLE IF NOT EXISTS film_like (
-        film_id INTEGER REFERENCES films (film_id) ON DELETE CASCADE,
-        user_like INTEGER REFERENCES users (user_id) ON DELETE CASCADE,
-        PRIMARY KEY (film_id, user_like)
+        film_id INTEGER,
+        user_like INTEGER,
+    	CONSTRAINT film_like_PK PRIMARY KEY (user_like, film_id),
+    	CONSTRAINT film_like_FK FOREIGN KEY (user_like) REFERENCES users (user_id)
+    	ON DELETE CASCADE ON UPDATE CASCADE,
+    	CONSTRAINT film_like_FK_1 FOREIGN KEY (film_id) REFERENCES films(film_id)
+    	ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS film_genre (
-    film_id INTEGER REFERENCES films (film_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    genre_id INTEGER REFERENCES genres (genre_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT FILM_GENRE_PK PRIMARY KEY (FILM_ID, GENRE_ID)
+    film_id INTEGER,
+    genre_id INTEGER,
+    	CONSTRAINT film_genre_PK PRIMARY KEY (film_id, genre_id),
+    	CONSTRAINT film_genre_FK FOREIGN KEY (film_id) REFERENCES films (film_id)
+    	ON DELETE CASCADE ON UPDATE CASCADE,
+    	CONSTRAINT film_genre_FK_1 FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
+    	ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS friends (
-    user_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    friend_id INTEGER REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    user_id INTEGER REFERENCES users (user_id),
+    friend_id INTEGER REFERENCES users (user_id),
     CONSTRAINT validate_request CHECK (user_id <> friend_id)
 );
