@@ -31,7 +31,7 @@ public class UserController {
     @GetMapping("/{id}/friends")
     public List<User> viewFriend(@PathVariable Long id) {
         log.trace("Получен запрос к эндпоинту: 'GET /users/id/friends'");
-        return service.viewUserFriend(id);
+        return service.getUserFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")

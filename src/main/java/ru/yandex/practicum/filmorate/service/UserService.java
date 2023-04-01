@@ -64,7 +64,7 @@ public class UserService {
         userDao.deleteUser(id);
     }
 
-    public List<User> viewUserFriend(Long userId) {
+    public List<User> getUserFriends(Long userId) {
         userDao.getUserById(userId);
         List<User> list = new ArrayList<>();
         userDao.getUserById(userId).getFriends().forEach(id -> {

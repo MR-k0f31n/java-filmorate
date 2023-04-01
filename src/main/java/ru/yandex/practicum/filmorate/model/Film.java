@@ -7,7 +7,10 @@ import ru.yandex.practicum.filmorate.model.validator.customInterface.DateAfterCi
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 @AllArgsConstructor
@@ -26,7 +29,7 @@ public class Film {
     private LocalDate releaseDate;
     @Positive(message = "должно быть больше 0")
     private Long duration;
-    private Set<Genre> genres;
-    private Set<Long> userLike;
+    private final Set<Genre> genres = new TreeSet<>(Comparator.comparingLong(Genre::getId));
+    private final Set<Long> userLike = new HashSet<>();
     private Mpa mpa;
 }

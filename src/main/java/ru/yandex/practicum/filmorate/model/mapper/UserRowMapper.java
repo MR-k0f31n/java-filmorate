@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 
 public class UserRowMapper implements RowMapper<User> {
 
@@ -17,8 +16,7 @@ public class UserRowMapper implements RowMapper<User> {
                 rs.getString("email"),
                 rs.getString("login"),
                 rs.getString("name"),
-                rs.getDate("birthday").toLocalDate(),
-                new HashSet<>()
+                rs.getDate("birthday").toLocalDate()
         );
     }
 }

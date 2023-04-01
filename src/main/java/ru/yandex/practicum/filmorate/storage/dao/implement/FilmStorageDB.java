@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.mapper.GenreRowMapper;
 import ru.yandex.practicum.filmorate.model.mapper.UserLikeRowMapper;
 import ru.yandex.practicum.filmorate.storage.dao.FilmDao;
@@ -14,9 +15,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @Primary
@@ -28,13 +27,16 @@ public class FilmStorageDB implements FilmDao {
     @Override
     public List<Film> getAllFilm() {
         log.info("Запрошен список фильмов");
-        String sqlRequest = "SELECT * FROM films JOIN mpa ON films.mpa = mpa.mpa_id";
-        List<Film> list = jdbcTemplate.query(sqlRequest, new FilmRowMapper());
-        list.forEach(id -> {
-            id.getUserLike().addAll(getLikeFromFilm(id.getId()));
-            id.getGenres().addAll(getGenreFromFilm(id.getId()));
-        });
-        return list;
+        String sqlRequest = "SELECT f.FILM_ID, f.FILM_NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION, f.MPA, " +
+                "m.MPA_ID, m.MPA_NAME, " +
+                "fg.GENRE_ID, g.GENRE_NAME, fl.USER_LIKE " +
+                "FROM FILMS f " +
+                "LEFT JOIN MPA m  ON f.MPA = m.MPA_ID " +
+                "LEFT JOIN FILM_GENRE fg ON f.FILM_ID = fg.FILM_ID " +
+                "LEFT JOIN GENRES g  ON fg.GENRE_ID = g.GENRE_ID " +
+                "LEFT JOIN FILM_LIKE fl ON F.film_id = fl.FILM_ID " +
+                "WHERE f.film_id IN (SELECT film_id FROM films ORDER BY film_id ASC)";
+        return jdbcTemplate.query(sqlRequest, listResultSetExtractor);
     }
 
     @Override
@@ -52,7 +54,7 @@ public class FilmStorageDB implements FilmDao {
         if (film.getGenres() != null) {
             sqlRequest = "SELECT * " +
                     "FROM films " +
-                    "JOIN mpa ON films.mpa = mpa.mpa_id " +
+                    "LEFT JOIN mpa ON films.mpa = mpa.mpa_id " +
                     "WHERE film_name = ? ";
             Long filmId = jdbcTemplate.queryForObject(sqlRequest, new FilmRowMapper(), film.getName()).getId();
             sqlRequest = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
@@ -64,7 +66,7 @@ public class FilmStorageDB implements FilmDao {
         }
         sqlRequest = "SELECT * " +
                 "FROM films " +
-                "JOIN mpa ON films.mpa = mpa.mpa_id " +
+                "LEFT JOIN mpa ON films.mpa = mpa.mpa_id " +
                 "WHERE film_name = ? ";
         return jdbcTemplate.queryForObject(sqlRequest, new FilmRowMapper(), film.getName());
     }
@@ -85,7 +87,8 @@ public class FilmStorageDB implements FilmDao {
                 film.getId()
         );
         if (film.getGenres() != null) {
-            sqlRequest = "DELETE FROM FILM_GENRE WHERE FILM_ID = ? AND GENRE_ID IN (SELECT GENRE_ID  FROM FILM_GENRE fg WHERE FILM_ID = ?)";
+            sqlRequest = "DELETE FROM FILM_GENRE WHERE FILM_ID = ? AND GENRE_ID IN " +
+                    "(SELECT GENRE_ID  FROM FILM_GENRE fg WHERE FILM_ID = ?)";
             jdbcTemplate.update(sqlRequest, film.getId(), film.getId());
             for (Genre genre : film.getGenres()) {
                 sqlRequest = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?);";
@@ -108,7 +111,7 @@ public class FilmStorageDB implements FilmDao {
     public Film getFilmById(Long id) {
         try {
             String sqlRequest = "SELECT * FROM films " +
-                    "JOIN mpa ON films.mpa = mpa.mpa_id " +
+                    "LEFT JOIN mpa ON films.mpa = mpa.mpa_id " +
                     "WHERE film_id = ? ";
             Film film = jdbcTemplate.queryForObject(sqlRequest, new FilmRowMapper(), id);
             film.getGenres().addAll(getGenreFromFilm(id));
@@ -121,9 +124,38 @@ public class FilmStorageDB implements FilmDao {
         }
     }
 
+    private final ResultSetExtractor<List<Film>> listResultSetExtractor = rs -> {
+        Map<Long, Film> filmMap = new HashMap<>();
+        Film film;
+        while (rs.next()) {
+            Long filmId = rs.getLong("FILM_ID");
+            film = filmMap.get(filmId);
+            if (film == null) {
+                film = new Film(
+                        rs.getLong("film_id"),
+                        rs.getString("film_name"),
+                        rs.getString("description"),
+                        rs.getDate("release_date").toLocalDate(),
+                        rs.getLong("duration"),
+                        new Mpa(rs.getLong("mpa_id"), rs.getString("mpa_name"))
+                );
+                filmMap.put(filmId, film);
+            }
+            Set<Genre> genres = film.getGenres();
+            if (rs.getLong("GENRE_ID") != 0) {
+                genres.add(new Genre(rs.getLong("genre_id"), rs.getString("genre_name")));
+            }
+            Set<Long> userLike = film.getUserLike();
+            if (rs.getLong("USER_LIKE") != 0) {
+                userLike.add(rs.getLong("USER_LIKE"));
+            }
+        }
+        return new ArrayList<>(filmMap.values());
+    };
+
     private Set<Genre> getGenreFromFilm(Long id) {
         String sqlRequest = "SELECT genres.genre_id, genre_name FROM film_genre " +
-                "JOIN genres ON film_genre.genre_id = genres.genre_id " +
+                "LEFT JOIN genres ON film_genre.genre_id = genres.genre_id " +
                 "WHERE film_id = ?";
         return new HashSet<>(jdbcTemplate.query(sqlRequest, new GenreRowMapper(), id));
     }
