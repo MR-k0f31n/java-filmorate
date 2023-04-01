@@ -53,7 +53,7 @@ public class FilmGenreMpaDBTest {
     }
 
     @Test
-    void addFilmAndGetAllFilms() {
+    void checkWriteFormDb() {
         filmStorage.addFilm(Film.builder()
                 .name("test")
                 .description("test")
@@ -77,13 +77,20 @@ public class FilmGenreMpaDBTest {
                 .build());
 
         List<Film> films = filmStorage.getAllFilm();
-        assertThat(films.get(0).getName()).isEqualTo("test");
+        assertThat(films.get(0).getName()).isEqualTo("TestCheck");
         assertThat(films.get(1).getDescription()).isEqualTo("test");
-        assertThat(films.get(2).getId()).isEqualTo(3);
+        assertThat(films.get(2).getId()).isEqualTo(3L);
     }
 
     @Test
     void updateFilm_expectedCorrectUpdate() {
+        filmStorage.addFilm(Film.builder()
+                .name("test")
+                .description("test")
+                .releaseDate(LocalDate.now())
+                .duration(100L)
+                .mpa(new Mpa(3L, "PG-13"))
+                .build());
         Film film = filmStorage.getFilmById(1L);
         film.setName("TestCheck");
         filmStorage.updateFilm(film);
@@ -92,15 +99,7 @@ public class FilmGenreMpaDBTest {
 
     @Test
     void AddFilmAndGetFilmById_ExpectedValidFilm() {
-        filmStorage.addFilm(Film.builder()
-                .id(4L)
-                .name("test")
-                .description("test")
-                .releaseDate(LocalDate.now())
-                .duration(100L)
-                .mpa(new Mpa(3L, "PG-13"))
-                .build());
-        Film film = filmStorage.getFilmById(4L);
-        assertThat(film.getName()).isEqualTo("test");
+        Film film = filmStorage.getFilmById(1L);
+        assertThat(film.getName()).isEqualTo("TestCheck");
     }
 }
