@@ -96,10 +96,4 @@ public class FilmGenreMpaDBTest {
         filmStorage.updateFilm(film);
         assertThat(filmStorage.getFilmById(1L).getName()).isEqualTo("TestCheck");
     }
-
-    @Test
-    void AddFilmAndGetFilmById_ExpectedValidFilm() {
-        Film film = filmStorage.getFilmById(1L);
-        assertThat(film.getName()).isEqualTo("TestCheck");
-    }
 }
