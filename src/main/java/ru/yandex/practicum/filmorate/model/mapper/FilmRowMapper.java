@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 
 public class FilmRowMapper implements RowMapper<Film> {
     @Override
