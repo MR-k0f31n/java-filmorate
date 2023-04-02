@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.dao.FilmLikeDao;
 import ru.yandex.practicum.filmorate.storage.dao.UserDao;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
