@@ -63,6 +63,11 @@ public class InMemoryFilmDao implements FilmDao {
         return films.get(id);
     }
 
+    @Override
+    public List<Film> getPopularFilms(Integer count) {
+        return null;
+    }
+
     private boolean checkFilm(Long id) {
         return films.containsKey(id);
     }

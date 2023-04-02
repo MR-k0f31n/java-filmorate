@@ -34,8 +34,7 @@ public class FilmStorageDB implements FilmDao {
                 "LEFT JOIN MPA m  ON f.MPA = m.MPA_ID " +
                 "LEFT JOIN FILM_GENRE fg ON f.FILM_ID = fg.FILM_ID " +
                 "LEFT JOIN GENRES g  ON fg.GENRE_ID = g.GENRE_ID " +
-                "LEFT JOIN FILM_LIKE fl ON F.film_id = fl.FILM_ID " +
-                "WHERE f.film_id IN (SELECT film_id FROM films ORDER BY film_id ASC)";
+                "LEFT JOIN FILM_LIKE fl ON F.film_id = fl.FILM_ID ";
         return jdbcTemplate.query(sqlRequest, listResultSetExtractor);
     }
 
@@ -124,8 +123,26 @@ public class FilmStorageDB implements FilmDao {
         }
     }
 
+    @Override
+    public List<Film> getPopularFilms(Integer size) {
+        String sqlRequest = "WITH cte AS " +
+                "(SELECT f.FILM_ID, COUNT(user_like) rate " +
+                "FROM FILMS f LEFT " +
+                "JOIN FILM_LIKE fl ON f.FILM_ID = fl.FILM_ID GROUP BY f.FILM_ID ORDER BY rate DESC LIMIT ?) " +
+                "SELECT f.FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, cte.rate, f.FILM_ID, " +
+                "m.MPA_ID, m.MPA_NAME, g.GENRE_ID, g.GENRE_NAME, l.USER_LIKE " +
+                "FROM FILMS f LEFT JOIN MPA m ON f.MPA = m.MPA_ID " +
+                "LEFT JOIN FILM_GENRE fg ON f.FILM_ID =fg.FILM_ID " +
+                "LEFT JOIN GENRES g ON fg.FILM_ID = g.GENRE_ID " +
+                "LEFT JOIN FILM_LIKE l ON f.FILM_ID = l.FILM_ID " +
+                "LEFT JOIN cte ON f.FILM_ID = cte.FILM_ID " +
+                "WHERE f.FILM_ID IN (SELECT FILM_ID FROM cte) " +
+                "ORDER BY rate DESC;";
+        return jdbcTemplate.query(sqlRequest, listResultSetExtractor, size);
+    }
+
     private final ResultSetExtractor<List<Film>> listResultSetExtractor = rs -> {
-        Map<Long, Film> filmMap = new HashMap<>();
+        Map<Long, Film> filmMap = new LinkedHashMap<>();
         Film film;
         while (rs.next()) {
             Long filmId = rs.getLong("FILM_ID");

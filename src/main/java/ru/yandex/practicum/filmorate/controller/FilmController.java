@@ -59,7 +59,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> viewPopularFilm(@RequestParam(defaultValue = "10") Long count) {
+    public List<Film> viewPopularFilm(@RequestParam(defaultValue = "10") Integer count) {
         log.trace("Получен запрос к эндпоинту: 'GET /films/popular'");
         return service.getTop10Film(count);
     }

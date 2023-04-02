@@ -14,4 +14,6 @@ public interface FilmDao {
     void deleteFilm(Long id);
 
     Film getFilmById(Long id);
+
+    List<Film> getPopularFilms(Integer count);
 }

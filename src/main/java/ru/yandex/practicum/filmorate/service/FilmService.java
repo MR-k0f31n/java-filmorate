@@ -19,11 +19,9 @@ public class FilmService {
     private final UserDao userDao;
     private final FilmLikeDao filmLikeDao;
 
-    public List<Film> getTop10Film(Long count) {
+    public List<Film> getTop10Film(Integer count) {
         log.trace("Попытка получить топ '{}' фильмов", count);
-        return List.copyOf(getAllFilm().stream()
-                .sorted((o1, o2) -> o2.getUserLike().size() - o1.getUserLike().size())
-                .limit(count).collect(Collectors.toList()));
+        return filmDao.getPopularFilms(count);
     }
 
     public void addLike(Long filmId, Long userId) {
