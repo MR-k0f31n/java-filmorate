@@ -36,11 +36,11 @@ public class FilmValidatorTests {
     @Test
     public void filmCreate_isValidTrue() {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Parry Hotter")
                 .description("This is a boy who learned to program")
                 .releaseDate(LocalDate.now().minusMonths(1))
-                .duration(10)
+                .duration(10L)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
@@ -50,11 +50,11 @@ public class FilmValidatorTests {
     @Test
     public void filmCreateNotValidDurationNegative_isValidFalse() {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Parry Hotter")
                 .description("This is a boy who learned to program")
                 .releaseDate(LocalDate.now().minusMonths(1))
-                .duration(-100)
+                .duration(-100L)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
@@ -64,11 +64,11 @@ public class FilmValidatorTests {
     @Test
     public void filmCreateNotValidDuration0_isValidFalse() {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Parry Hotter")
                 .description("This is a boy who learned to program")
                 .releaseDate(LocalDate.now().minusMonths(1))
-                .duration(0)
+                .duration(0L)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
@@ -78,7 +78,7 @@ public class FilmValidatorTests {
     @Test
     public void filmCreateValidDescription200_isValidTrue() {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Parry Hotter")
                 .description("This is a boy who learned to program____" +
                         "_____________________________________________" +
@@ -86,7 +86,7 @@ public class FilmValidatorTests {
                         "_____________________________________________" +
                         "______________________200")
                 .releaseDate(LocalDate.now().minusMonths(1))
-                .duration(10)
+                .duration(10L)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
@@ -97,7 +97,7 @@ public class FilmValidatorTests {
     @Test
     public void filmCreateNotValidDescription201_isValidFalse() {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Parry Hotter")
                 .description("This is a boy who learned to program____" +
                         "_____________________________________________" +
@@ -105,7 +105,7 @@ public class FilmValidatorTests {
                         "_____________________________________________" +
                         "_______________________201")
                 .releaseDate(LocalDate.now().minusMonths(1))
-                .duration(10)
+                .duration(10L)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
@@ -115,11 +115,11 @@ public class FilmValidatorTests {
     @Test
     public void filmCreateNotValidDescriptionIsBlank_isValidFalse() {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Parry Hotter")
                 .description("")
                 .releaseDate(LocalDate.now().minusMonths(1))
-                .duration(10)
+                .duration(10L)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
@@ -129,11 +129,11 @@ public class FilmValidatorTests {
     @Test
     public void filmCreateNotValidNameIsBlank_isValidFalse() {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("  ")
                 .description("This is a boy who learned to program")
                 .releaseDate(LocalDate.now().minusMonths(1))
-                .duration(10)
+                .duration(10L)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
@@ -143,11 +143,11 @@ public class FilmValidatorTests {
     @Test
     public void filmCreateNotReleaseDate_isValidFalse() {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Parry Hotter")
                 .description("This is a boy who learned to program")
                 .releaseDate(LocalDate.now().plusMonths(1))
-                .duration(10)
+                .duration(10L)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);
@@ -157,11 +157,11 @@ public class FilmValidatorTests {
     @Test
     public void filmCreateReleaseDateBeforeCinemaBirth_isValidFalse() {
         Film film = Film.builder()
-                .id(1)
+                .id(1L)
                 .name("Parry Hotter")
                 .description("This is a boy who learned to program")
-                .releaseDate(LocalDate.of(1895,12,27))
-                .duration(10)
+                .releaseDate(LocalDate.of(1895, 12, 27))
+                .duration(10L)
                 .build();
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Exception ex = new ConstraintViolationException(violations);

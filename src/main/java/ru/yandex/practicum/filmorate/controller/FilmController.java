@@ -23,22 +23,23 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film findFilmById (@PathVariable Integer id) {
+    public Film findFilmById(@PathVariable Long id) {
         log.trace("Получен запрос к эндпоинту: 'GET /films/id'");
         return service.getFilmById(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void addLike (@PathVariable Integer id, @PathVariable Integer userId) {
+    public void addLike(@PathVariable Long id, @PathVariable Long userId) {
         log.trace("Получен запрос к эндпоинту: 'PUT /films/id/like/userId'");
         service.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public void removeLike (@PathVariable Integer id, @PathVariable Integer userId) {
+    public void removeLike(@PathVariable Long id, @PathVariable Long userId) {
         log.trace("Получен запрос к эндпоинту: 'DELETE /films/id/like/userId'");
         service.removeLike(id, userId);
     }
+
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
         log.trace("Получен запрос к эндпоинту: 'POST /films'");
@@ -52,13 +53,13 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFilm (@PathVariable Integer id) {
+    public void deleteFilm(@PathVariable Long id) {
         log.trace("Получен запрос к эндпоинту: 'DELETE /films/id'");
         service.deleteFilm(id);
     }
 
     @GetMapping("/popular")
-    public List<Film> viewPopularFilm (@RequestParam(defaultValue = "10") Integer count) {
+    public List<Film> viewPopularFilm(@RequestParam(defaultValue = "10") Integer count) {
         log.trace("Получен запрос к эндпоинту: 'GET /films/popular'");
         return service.getTop10Film(count);
     }

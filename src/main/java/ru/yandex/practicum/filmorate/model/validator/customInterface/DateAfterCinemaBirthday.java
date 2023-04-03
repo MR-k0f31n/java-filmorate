@@ -1,6 +1,6 @@
-package ru.yandex.practicum.filmorate.validator.customInterface;
+package ru.yandex.practicum.filmorate.model.validator.customInterface;
 
-import ru.yandex.practicum.filmorate.validator.DateValidate;
+import ru.yandex.practicum.filmorate.model.validator.DateValidate;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

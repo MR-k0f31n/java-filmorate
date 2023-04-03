@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -10,20 +11,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
 @Builder
-@NonNull
 public class User {
     @Positive
-    private Integer id;
+    private Long id;
     @Email(message = "Поле email не соответствует формату userEmail@email.com")
-    private final String email;
+    private String email;
     @Pattern(message = "Поле login должно содержать только A-Z и 1-0",
             regexp = "^[A-Za-z]([.A-Za-z0-9-]{1,18})([A-Za-z0-9])$")
     @NonNull
-    private final String login;
-    @Builder.Default
-    private String name = "";
+    private String login;
+    private String name;
     @PastOrPresent(message = "Поле birthday не корректно")
-    private final LocalDate birthday;
-    private final Set<Integer> friends = new HashSet<>();
+    private LocalDate birthday;
+    private final Set<Long> friends = new HashSet<>();
 }

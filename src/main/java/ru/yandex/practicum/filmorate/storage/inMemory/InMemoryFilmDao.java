@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filmorate.storage.implement;
+package ru.yandex.practicum.filmorate.storage.inMemory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.dao.FilmDao;
 
 import java.util.List;
 import java.util.Map;
@@ -12,10 +12,10 @@ import java.util.HashMap;
 
 @Component
 @Slf4j
-public class InMemoryFilmStorage implements FilmStorage {
+public class InMemoryFilmDao implements FilmDao {
 
-    private int currencyIdFilm = 1;
-    private final Map<Integer, Film> films = new HashMap<>();
+    private long currencyIdFilm = 1;
+    private final Map<Long, Film> films = new HashMap<>();
 
     @Override
     public List<Film> getAllFilm() {
@@ -47,7 +47,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void deleteFilm(Integer id) {
+    public void deleteFilm(Long id) {
         if (!checkFilm(id)) {
             throw new NotFoundException("Фильм не найден id " + id);
         }
@@ -56,7 +56,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(Integer id) {
+    public Film getFilmById(Long id) {
         if (!checkFilm(id)) {
             throw new NotFoundException("Фильм не найден id " + id);
         }
@@ -64,7 +64,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public boolean checkFilm(Integer id) {
+    public List<Film> getPopularFilms(Integer count) {
+        return null;
+    }
+
+    private boolean checkFilm(Long id) {
         return films.containsKey(id);
     }
 }

@@ -1,19 +1,19 @@
-package ru.yandex.practicum.filmorate.storage.implement;
+package ru.yandex.practicum.filmorate.storage.inMemory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.dao.UserDao;
 
 import java.util.*;
 
 @Component
 @Slf4j
-public class InMemoryUserStorage implements UserStorage {
-    private int currencyUserId = 1;
-    private final Map<Integer, User> users = new HashMap<>();
+public class InMemoryUserDao implements UserDao {
+    private long currencyUserId = 1;
+    private final Map<Long, User> users = new HashMap<>();
     private final Set<String> usageEmail = new HashSet<>();
 
     @Override
@@ -53,7 +53,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void deleteUser(Integer id) {
+    public void deleteUser(Long id) {
         if (!checkUser(id)) {
             throw new NotFoundException("Пользователь не обнаружен id " + id);
         }
@@ -62,7 +62,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(Integer id) {
+    public User getUserById(Long id) {
         if (!checkUser(id)) {
             throw new NotFoundException("Пользователь не обнаружен id " + id);
         }
@@ -70,8 +70,7 @@ public class InMemoryUserStorage implements UserStorage {
         return users.get(id);
     }
 
-    @Override
-    public boolean checkUser (Integer id) {
+    private boolean checkUser(Long id) {
         log.trace("check user id '{}'", id);
         return users.containsKey(id);
     }

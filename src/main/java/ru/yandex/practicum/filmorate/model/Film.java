@@ -1,32 +1,35 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
-import ru.yandex.practicum.filmorate.validator.customInterface.DateAfterCinemaBirthday;
+import ru.yandex.practicum.filmorate.model.validator.customInterface.DateAfterCinemaBirthday;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Data
+@AllArgsConstructor
 @Builder
-@NonNull
 public class Film {
-    private final static int MAX_LENGTH_DESCRIPTION = 200;
     @Positive
-    private Integer id;
+    private Long id;
     @NotBlank(message = "Поле name не может быть пустым")
-    private final String name;
+    private String name;
     @NotBlank(message = "Поле description не может быть пустым")
-    @Size(message = "Поле description имеет максимальное число символов: " + MAX_LENGTH_DESCRIPTION,
-            max = MAX_LENGTH_DESCRIPTION)
-    private final String description;
+    @Size(message = "Поле description имеет максимальное число символов: " + 200,
+            max = 200)
+    private String description;
     @PastOrPresent(message = "Поле releaseDate некорректно")
     @DateAfterCinemaBirthday(message = "Поле releaseDate некорректно дата первого кино: 28.12.1895")
-    private final LocalDate releaseDate;
+    private LocalDate releaseDate;
     @Positive(message = "должно быть больше 0")
-    private final Integer duration;
-    private final Set<Integer> userLike = new HashSet<>();
+    private Long duration;
+    private final Set<Genre> genres = new TreeSet<>(Comparator.comparingLong(Genre::getId));
+    private final Set<Long> userLike = new HashSet<>();
+    private Mpa mpa;
 }
